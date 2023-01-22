@@ -24,6 +24,8 @@ namespace HogwartsPotions
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllersWithViews();
+
+            services.AddAutoMapper(typeof(AutoMapperConfig)); // register AutoMapper
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
