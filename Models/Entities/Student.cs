@@ -24,7 +24,6 @@ namespace HogwartsPotions.Models.Entities
         public PetType PetType { get; set; }
 
         [ForeignKey(nameof(RoomId))]
-        [Required]
         public int? RoomId { get; set; }
         public Room? Room { get; set; }
     }
