@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using HogwartsPotions.Models.DTOs;
+using HogwartsPotions.Models.DTOs.Room;
+using HogwartsPotions.Models.DTOs.Student;
 using HogwartsPotions.Models.Entities;
 
 namespace HogwartsPotions.Configurations
@@ -11,9 +12,11 @@ namespace HogwartsPotions.Configurations
 
             CreateMap<Room, GetRoomDTO>().ReverseMap();
             CreateMap<Room, RoomDTO>().ReverseMap();
+            CreateMap<Room, RoomDTOWithId>().ReverseMap();
 
             CreateMap<Student, GetStudentDTO>().ReverseMap();
             CreateMap<Student, StudentDTO>().ReverseMap();
+            CreateMap<Student, StudentDTOWithId>().ReverseMap();
         }
     }
 }

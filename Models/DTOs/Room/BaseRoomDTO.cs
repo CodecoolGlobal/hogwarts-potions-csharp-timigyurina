@@ -1,7 +1,7 @@
 ﻿using HogwartsPotions.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace HogwartsPotions.Models.DTOs
+namespace HogwartsPotions.Models.DTOs.Room
 {
     public abstract class BaseRoomDTO
     {
