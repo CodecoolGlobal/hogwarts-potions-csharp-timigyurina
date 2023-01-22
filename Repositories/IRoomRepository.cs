@@ -1,5 +1,5 @@
 ﻿using HogwartsPotions.Models.Entities;
-using Microsoft.EntityFrameworkCore;
+using HogwartsPotions.Models.Enums;
 
 namespace HogwartsPotions.Repositories
 {
@@ -7,8 +7,9 @@ namespace HogwartsPotions.Repositories
     {
         Task<IEnumerable<Room>> GetAvailable();
         Task<IEnumerable<Room>> GetRoomsOfRatOwners();
-        //Task<Room?> AssignTo(int roomId, Student student);
-        //Task<bool> RemoveStudentFrom(int originalRoomIdOfStudent, Student student);
+        Task<IEnumerable<Room>> GetAvailableOfHouse(HouseType houseType);
+        Task<Room?> GetWithDetails(int id);
+
         //Task<IEnumerable<Room>> SearchRooms(string? houseType, int? capacity, int? numberOfResidents);
     }
 }
