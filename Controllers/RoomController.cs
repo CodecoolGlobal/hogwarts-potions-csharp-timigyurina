@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using HogwartsPotions.Data;
-using HogwartsPotions.Models.DTOs;
+using HogwartsPotions.Models.DTOs.Room;
 using HogwartsPotions.Models.Entities;
-using HogwartsPotions.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +49,7 @@ namespace HogwartsPotions.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GetRoomDTO>> GetRoomById(int id)
         {
-            Room? room = await _unitOfWork.RoomRepository.GetAsync(id);
+            Room? room = await _unitOfWork.RoomRepository.GetWithDetails(id);
 
             if (room == null)
             {
@@ -64,13 +63,12 @@ namespace HogwartsPotions.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Room>> AddRoom([FromBody] RoomDTO roomDTO)
+        public async Task<ActionResult<GetRoomDTO>> AddRoom([FromBody] RoomDTO roomDTO)
         {
-            if (int.TryParse(roomDTO.House, out var houseType))  // Do not let the user put in a number as a string becuse it will be stored..
+            if (!CheckTypes(roomDTO))  // Do not let the user put in a number as a string becuse it will be stored..
             {
                 return BadRequest($"House type should be a valid House name in {nameof(AddRoom)}");
             }
-
 
             Room room;
             try
@@ -107,7 +105,20 @@ namespace HogwartsPotions.Controllers
                 return NotFound();
             }
 
-            _mapper.Map(roomDTO, room);
+            if (!CheckTypes(roomDTO)) 
+            {
+                return BadRequest($"House type should be a valid House name in {nameof(AddRoom)}");
+            }
+
+            try
+            {
+                _mapper.Map(roomDTO, room);
+            }
+            catch (Exception)
+            {
+                return BadRequest($"House type does not exist in {nameof(UpdateRoomById)}");
+            }
+            
 
             try
             {
@@ -146,7 +157,15 @@ namespace HogwartsPotions.Controllers
             return NoContent();
         }
 
+        private bool CheckTypes(RoomDTO roomDTO)
+        {
+            if (int.TryParse(roomDTO.House, out var houseType))
+            {
+                return false;
+            }
 
+            return true;
+        }
 
 
         //// Would only be needed if the RoonController derived from Controller, rather than ControllerBase. More info: 
