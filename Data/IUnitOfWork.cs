@@ -5,6 +5,7 @@ namespace HogwartsPotions.Data
     public interface IUnitOfWork : IDisposable
     {
         public IRoomRepository RoomRepository { get; }
+        public IStudentRepository StudentRepository { get; }
 
         int Commit();
         Task<int> CommitAsync();

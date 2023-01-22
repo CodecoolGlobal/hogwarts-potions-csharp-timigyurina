@@ -6,12 +6,14 @@ namespace HogwartsPotions.Data
     {
         private readonly HogwartsContext _context;
         private IRoomRepository _roomRepository;
+        private IStudentRepository _studentRepository;
         private bool _disposed = false;
 
-        public UnitOfWork(HogwartsContext context, IRoomRepository roomRepository)
+        public UnitOfWork(HogwartsContext context, IRoomRepository roomRepository, IStudentRepository studentRepository)
         {
             _context = context;
             _roomRepository = roomRepository;
+            _studentRepository = studentRepository;
         }
 
 
@@ -25,6 +27,11 @@ namespace HogwartsPotions.Data
                 //}
                 return _roomRepository;
             }
+        }
+
+        public IStudentRepository StudentRepository
+        {
+            get { return _studentRepository; }
         }
 
         public int Commit()  // use this at adding, updating or deleting an entity
