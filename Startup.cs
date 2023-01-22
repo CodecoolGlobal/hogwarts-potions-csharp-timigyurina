@@ -1,12 +1,7 @@
 using HogwartsPotions.Configurations;
 using HogwartsPotions.Data;
 using HogwartsPotions.Repositories;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace HogwartsPotions
 {
@@ -27,9 +22,10 @@ namespace HogwartsPotions
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddControllersWithViews();
+            services.AddControllers();
 
             services.AddAutoMapper(typeof(AutoMapperConfig)); // register AutoMapper
         }
