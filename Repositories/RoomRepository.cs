@@ -1,5 +1,6 @@
 ﻿using HogwartsPotions.Data;
 using HogwartsPotions.Models.Entities;
+using HogwartsPotions.Models.Enums;
 
 namespace HogwartsPotions.Repositories
 {
@@ -11,12 +12,12 @@ namespace HogwartsPotions.Repositories
 
         public Task<IEnumerable<Room>> GetAvailable()
         {
-            throw new NotImplementedException();
+            return GetAllAsync(r => r.Residents.Count < r.Capacity);
         }
 
         public Task<IEnumerable<Room>> GetRoomsOfRatOwners()
         {
-            throw new NotImplementedException();
+           return GetAllAsync(r => r.Residents.All(res => res.PetType == PetType.None || res.PetType == PetType.Rat)); 
         }
     }
 }
