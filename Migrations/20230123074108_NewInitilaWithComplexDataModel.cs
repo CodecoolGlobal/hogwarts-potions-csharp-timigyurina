@@ -5,11 +5,24 @@
 namespace HogwartsPotions.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class NewInitilaWithComplexDataModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
@@ -62,7 +75,31 @@ namespace HogwartsPotions.Migrations
                         column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Consistencies",
+                columns: table => new
+                {
+                    RecipeId = table.Column<int>(type: "int", nullable: false),
+                    IngredientId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Consistencies", x => new { x.RecipeId, x.IngredientId });
+                    table.ForeignKey(
+                        name: "FK_Consistencies_Ingredients_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "Ingredients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Consistencies_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,7 +118,7 @@ namespace HogwartsPotions.Migrations
                     table.PrimaryKey("PK_Potions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Potions_Recipes_RecipeId",
-                        column: x => x.RecipeId,    
+                        column: x => x.RecipeId,
                         principalTable: "Recipes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -93,19 +130,10 @@ namespace HogwartsPotions.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.Id);
-                });
-
+            migrationBuilder.CreateIndex(
+                name: "IX_Consistencies_IngredientId",
+                table: "Consistencies",
+                column: "IngredientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Potions_RecipeId",
@@ -132,10 +160,13 @@ namespace HogwartsPotions.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Ingredients");
+                name: "Consistencies");
 
             migrationBuilder.DropTable(
                 name: "Potions");
+
+            migrationBuilder.DropTable(
+                name: "Ingredients");
 
             migrationBuilder.DropTable(
                 name: "Recipes");

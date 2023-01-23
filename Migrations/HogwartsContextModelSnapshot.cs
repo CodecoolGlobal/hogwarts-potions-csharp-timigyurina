@@ -22,6 +22,21 @@ namespace HogwartsPotions.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("HogwartsPotions.Models.Entities.Consistency", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipeId", "IngredientId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("Consistencies");
+                });
+
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Ingredient", b =>
                 {
                     b.Property<int>("Id")
@@ -35,19 +50,9 @@ namespace HogwartsPotions.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("PotionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PotionId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("Ingredients", (string)null);
+                    b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
@@ -78,7 +83,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Potions", (string)null);
+                    b.ToTable("Potions");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Recipe", b =>
@@ -101,7 +106,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Recipes", (string)null);
+                    b.ToTable("Recipes");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Room", b =>
@@ -120,7 +125,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Student", b =>
@@ -149,18 +154,26 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("HogwartsPotions.Models.Entities.Ingredient", b =>
+            modelBuilder.Entity("HogwartsPotions.Models.Entities.Consistency", b =>
                 {
-                    b.HasOne("HogwartsPotions.Models.Entities.Potion", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("PotionId");
+                    b.HasOne("HogwartsPotions.Models.Entities.Ingredient", "Ingredient")
+                        .WithMany("Consistencies")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("HogwartsPotions.Models.Entities.Recipe", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId");
+                    b.HasOne("HogwartsPotions.Models.Entities.Recipe", "Recipe")
+                        .WithMany("Consistencies")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingredient");
+
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
@@ -172,7 +185,7 @@ namespace HogwartsPotions.Migrations
                         .IsRequired();
 
                     b.HasOne("HogwartsPotions.Models.Entities.Student", "Student")
-                        .WithMany()
+                        .WithMany("Potions")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -185,7 +198,7 @@ namespace HogwartsPotions.Migrations
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Recipe", b =>
                 {
                     b.HasOne("HogwartsPotions.Models.Entities.Student", "Student")
-                        .WithMany()
+                        .WithMany("Recipes")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -202,19 +215,26 @@ namespace HogwartsPotions.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
+            modelBuilder.Entity("HogwartsPotions.Models.Entities.Ingredient", b =>
                 {
-                    b.Navigation("Ingredients");
+                    b.Navigation("Consistencies");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Recipe", b =>
                 {
-                    b.Navigation("Ingredients");
+                    b.Navigation("Consistencies");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Room", b =>
                 {
                     b.Navigation("Residents");
+                });
+
+            modelBuilder.Entity("HogwartsPotions.Models.Entities.Student", b =>
+                {
+                    b.Navigation("Potions");
+
+                    b.Navigation("Recipes");
                 });
 #pragma warning restore 612, 618
         }
