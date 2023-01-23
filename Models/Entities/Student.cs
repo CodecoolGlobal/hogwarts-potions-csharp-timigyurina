@@ -26,5 +26,8 @@ namespace HogwartsPotions.Models.Entities
         [ForeignKey(nameof(RoomId))]
         public int? RoomId { get; set; }
         public Room? Room { get; set; }
+
+        public ICollection<Recipe> Recipes { get; set; }
+        public ICollection<Potion> Potions { get; set; }
     }
 }

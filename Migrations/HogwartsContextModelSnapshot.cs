@@ -47,7 +47,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredients", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
@@ -78,7 +78,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Potions");
+                    b.ToTable("Potions", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Recipe", b =>
@@ -101,7 +101,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("Recipes", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Room", b =>
@@ -120,7 +120,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Student", b =>
@@ -149,7 +149,7 @@ namespace HogwartsPotions.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Ingredient", b =>

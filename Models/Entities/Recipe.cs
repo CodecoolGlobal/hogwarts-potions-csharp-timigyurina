@@ -20,6 +20,7 @@ namespace HogwartsPotions.Models.Entities
         public Student Student { get; set; }
 
 
-        public HashSet<Ingredient> Ingredients { get; set; } = new HashSet<Ingredient>();
+        //public HashSet<Ingredient> Ingredients { get; set; } = new HashSet<Ingredient>();
+        public ICollection<Consistency> Consistencies { get; set; }
     }
 }
