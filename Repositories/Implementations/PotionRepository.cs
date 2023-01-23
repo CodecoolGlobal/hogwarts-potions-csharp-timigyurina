@@ -15,10 +15,10 @@ namespace HogwartsPotions.Repositories.Implementations
         public async Task<Potion?> CreateNewAsync(Student creator, BrewingStatus brewingStatus, Recipe recipe)
         {
 
-
             Potion potionToBeAdded = new Potion()
             {
                 StudentId = creator.Id,
+                RecipeId = recipe.Id,
                 BrewingStatus = brewingStatus,
                 Name = $"{creator.Name}'s {brewingStatus} #{creator.Id}{recipe.Id}"
             };
