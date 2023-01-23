@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HogwartsPotions.Models.DTOs.Room
+namespace HogwartsPotions.Models.DTOs.RoomDTOs
 {
     public class RoomDTOWithId : BaseRoomDTO // for Getting a Student with details -> to avoid circular references
     {

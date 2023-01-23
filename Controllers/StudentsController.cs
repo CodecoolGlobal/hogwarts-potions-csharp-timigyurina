@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using HogwartsPotions.Data;
-using HogwartsPotions.Models.DTOs.Room;
-using HogwartsPotions.Models.DTOs.Student;
+using HogwartsPotions.Models.DTOs.RoomDTOs;
+using HogwartsPotions.Models.DTOs.StudentDTOs;
 using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;

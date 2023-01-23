@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HogwartsPotions.Models.DTOs.Student
+namespace HogwartsPotions.Models.DTOs.StudentDTOs
 {
     public class StudentAssignDTO
     {

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using HogwartsPotions.Models.DTOs.Student;
+using HogwartsPotions.Models.DTOs.StudentDTOs;
 using HogwartsPotions.Models.Entities;
 
-namespace HogwartsPotions.Models.DTOs.Room
+namespace HogwartsPotions.Models.DTOs.RoomDTOs
 {
     public class GetRoomDTO : BaseRoomDTO // For Get and GetAll
     {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using HogwartsPotions.Models.DTOs.Room;
-using HogwartsPotions.Models.DTOs.Student;
+using HogwartsPotions.Models.DTOs.RoomDTOs;
+using HogwartsPotions.Models.DTOs.StudentDTOs;
 using HogwartsPotions.Models.Entities;
 
 namespace HogwartsPotions.Configurations
