@@ -28,6 +28,7 @@ namespace HogwartsPotions
             services.AddScoped<IPotionRepository, PotionRepository>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+            services.AddScoped<IConsistencyRepository, ConsistencyRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

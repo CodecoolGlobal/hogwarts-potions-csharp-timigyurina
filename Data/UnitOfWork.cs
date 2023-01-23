@@ -6,11 +6,12 @@ namespace HogwartsPotions.Data
     {
         private readonly HogwartsContext _context;
 
-        private IRoomRepository _roomRepository;
-        private IStudentRepository _studentRepository;
-        private IPotionRepository _potionRepository;
-        private IRecipeRepository _recipeRepository;
-        private IIngredientRepository _ingredientRepository;
+        private readonly IRoomRepository _roomRepository;
+        private readonly IStudentRepository _studentRepository;
+        private readonly IPotionRepository _potionRepository;
+        private readonly IRecipeRepository _recipeRepository;
+        private readonly IIngredientRepository _ingredientRepository;
+        private readonly IConsistencyRepository _consistencyRepository;
 
         private bool _disposed = false;
 
@@ -20,7 +21,8 @@ namespace HogwartsPotions.Data
             IStudentRepository studentRepository,
             IPotionRepository potionRepository,
             IRecipeRepository recipeRepository,
-            IIngredientRepository ingredientRepository)
+            IIngredientRepository ingredientRepository,
+            IConsistencyRepository consistencyRepository)
         {
             _context = context;
             _roomRepository = roomRepository;
@@ -28,6 +30,7 @@ namespace HogwartsPotions.Data
             _potionRepository = potionRepository;
             _recipeRepository = recipeRepository;
             _ingredientRepository = ingredientRepository;
+            _consistencyRepository = consistencyRepository;
         }
 
 
@@ -43,25 +46,15 @@ namespace HogwartsPotions.Data
             }
         }
 
-        public IStudentRepository StudentRepository
-        {
-            get { return _studentRepository; }
-        }
+        public IStudentRepository StudentRepository => _studentRepository;
 
-        public IPotionRepository PotionRepository
-        {
-            get { return _potionRepository; }
-        }
+        public IPotionRepository PotionRepository => _potionRepository;
 
-        public IRecipeRepository RecipeRepository
-        {
-            get { return _recipeRepository; }
-        }
+        public IRecipeRepository RecipeRepository => _recipeRepository;
 
-        public IIngredientRepository IngredientRepository
-        {
-            get { return _ingredientRepository; }
-        }
+        public IIngredientRepository IngredientRepository => _ingredientRepository;
+
+        public IConsistencyRepository ConsistencyRepository => _consistencyRepository;
 
         public int Commit()  // use this at adding, updating or deleting an entity
         {
