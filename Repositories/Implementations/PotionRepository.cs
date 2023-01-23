@@ -2,6 +2,7 @@
 using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
 using HogwartsPotions.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HogwartsPotions.Repositories.Implementations
 {
@@ -24,6 +25,21 @@ namespace HogwartsPotions.Repositories.Implementations
             };
 
             return await AddAsync(potionToBeAdded);
+        }
+
+        public async Task<IEnumerable<Potion>> GetStudentPotions(int studentId)
+        {
+            return await GetAllAsync(p => p.StudentId == studentId);
+        }
+
+        public Task<Potion?> GetPotionWithDetails(int id)
+        {
+            return _context.Potions
+                .Include(p => p.Recipe)
+                    .ThenInclude(r => r.Consistencies)
+                        .ThenInclude(c => c.Ingredient)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(q => q.Id == id);
         }
     }
 }
