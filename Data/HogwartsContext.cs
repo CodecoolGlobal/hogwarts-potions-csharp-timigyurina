@@ -16,5 +16,13 @@ namespace HogwartsPotions.Data
         public DbSet<Potion> Potions { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Consistency> Consistencies { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Consistency>()
+                .HasKey(c => new { c.RecipeId, c.IngredientId });
+        }
+
     }
 }
