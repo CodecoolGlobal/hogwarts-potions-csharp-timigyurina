@@ -4,7 +4,6 @@ using HogwartsPotions.Models.DTOs.RoomDTOs;
 using HogwartsPotions.Models.DTOs.StudentDTOs;
 using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace HogwartsPotions.Controllers
@@ -45,7 +44,7 @@ namespace HogwartsPotions.Controllers
             }
 
             GetStudentDTO studentDTO = _mapper.Map<GetStudentDTO>(student);
-           // studentDTO.Room = await _unitOfWork.RoomRepository.GetAsync(studentDTO.RoomId);
+            // studentDTO.Room = await _unitOfWork.RoomRepository.GetAsync(studentDTO.RoomId);
 
             return Ok(studentDTO);
         }
@@ -55,12 +54,12 @@ namespace HogwartsPotions.Controllers
         [HttpPost]
         public async Task<ActionResult<GetStudentDTO>> AddStudent(StudentDTO studentDTO)
         {
-            
-            if (!CheckTypes(studentDTO))  
+
+            if (!CheckTypes(studentDTO))
             {
                 return BadRequest($"House or Pet type should be a valid name in {nameof(AddStudent)}");
             }
-        
+
             Student student;
             try
             {
@@ -108,7 +107,7 @@ namespace HogwartsPotions.Controllers
             {
                 return BadRequest($"Invalid House or Pet type in {nameof(UpdateStudentById)}");
             }
-           
+
 
             try
             {
@@ -150,7 +149,7 @@ namespace HogwartsPotions.Controllers
 
             IEnumerable<Room> availableRoomsWithHouse = await _unitOfWork.RoomRepository.GetAvailableOfHouse(student.HouseType);
 
-            IEnumerable<GetRoomDTO> availableRoomsWithHouseDTOs = _mapper.Map<IEnumerable<GetRoomDTO>> (availableRoomsWithHouse);
+            IEnumerable<GetRoomDTO> availableRoomsWithHouseDTOs = _mapper.Map<IEnumerable<GetRoomDTO>>(availableRoomsWithHouse);
 
             StudentWithPossibleRooms studentWithPossibleHouses = new()
             {
@@ -199,7 +198,7 @@ namespace HogwartsPotions.Controllers
                 return BadRequest($"{exc.Message} (in {nameof(AssignRoom)})");
             }
 
-            StudentDTO assignedStudentDTO = _mapper.Map<StudentDTO>(assignedStudent);
+            GetStudentDTO assignedStudentDTO = _mapper.Map<GetStudentDTO>(assignedStudent);
             return Ok(assignedStudentDTO);
 
 
