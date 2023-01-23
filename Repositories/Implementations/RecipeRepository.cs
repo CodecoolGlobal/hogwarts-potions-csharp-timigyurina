@@ -46,5 +46,31 @@ namespace HogwartsPotions.Repositories.Implementations
 
             return await AddAsync(recipeToAdd);
         }
+
+        public async Task<HashSet<Ingredient>?> GetIngredientsOfRecipe(int recipeId)
+        {
+            Recipe? recipe  = await GetWithDetails(recipeId);
+            if (recipe == null)
+            {
+                return null;
+            }
+
+            HashSet<Ingredient> ingredients= new HashSet<Ingredient>();
+            foreach (Consistency consistency in recipe.Consistencies)
+            {
+                ingredients.Add(consistency.Ingredient);
+            }
+
+            return ingredients;
+        }
+
+        public async Task<Recipe?> GetWithDetails(int id)
+        {
+            return await _context.Recipes
+                .Include(r => r.Consistencies)
+                    .ThenInclude(c => c.Ingredient)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
     }
 }
