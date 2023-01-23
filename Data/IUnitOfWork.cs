@@ -6,6 +6,7 @@ namespace HogwartsPotions.Data
     {
         public IRoomRepository RoomRepository { get; }
         public IStudentRepository StudentRepository { get; }
+        public IPotionRepository PotionRepository { get; }
 
         int Commit();
         Task<int> CommitAsync();

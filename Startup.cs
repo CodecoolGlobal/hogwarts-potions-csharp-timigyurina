@@ -23,6 +23,7 @@ namespace HogwartsPotions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IPotionRepository, PotionRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllers();
