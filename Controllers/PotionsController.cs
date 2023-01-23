@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HogwartsPotions.Data;
+using HogwartsPotions.Models.DTOs.IngredientDTOs;
 using HogwartsPotions.Models.DTOs.PotionDTOs;
 using HogwartsPotions.Models.DTOs.StudentDTOs;
 using HogwartsPotions.Models.Entities;
@@ -32,6 +33,21 @@ namespace HogwartsPotions.Controllers
             IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions); 
             return Ok(potionDTOs);
         }
+        
+        
+        // GET: api/Potions/student/1
+        [HttpGet("student/{studentId}")]
+        public async Task<ActionResult<IEnumerable<GetPotionDTO>>> GetStudentPotions(int studentId)
+        {
+            Student? student = await _unitOfWork.StudentRepository.GetAsync(studentId);
+            if (student == null)
+            {
+                return BadRequest($"There is no student with the id of {studentId}");
+            }
+            IEnumerable<Potion> potions = await _unitOfWork.PotionRepository.GetStudentPotions(studentId);
+            IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions); 
+            return Ok(potionDTOs);
+        }
 
         // GET: api/Potions/5
         [HttpGet("{id}")]
@@ -45,6 +61,30 @@ namespace HogwartsPotions.Controllers
             }
 
             GetPotionDTO potionDTO = _mapper.Map<GetPotionDTO>(potion);
+
+            return Ok(potionDTO);
+        }
+
+        // GET: api/Potions/details/5
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult<Potion>> GetPotionWithDetails(int id)
+        {
+            Potion? potion = await _unitOfWork.PotionRepository.GetPotionWithDetails(id);
+
+            if (potion == null)
+            {
+                return NotFound("Potion was not found");
+            }
+
+            HashSet<Ingredient>? ingredients = await _unitOfWork.RecipeRepository.GetIngredientsOfRecipe(potion.RecipeId);
+            if (ingredients == null)
+            {
+                return NotFound($"No recipe with the id of {potion.RecipeId} was found");
+            }
+
+            GetPotionDTOWithDetails potionDTO = _mapper.Map<GetPotionDTOWithDetails>(potion);
+            HashSet<IngredientDTOWithId> ingredientDTOs = _mapper.Map<HashSet<IngredientDTOWithId>>(ingredients);
+            potionDTO.Ingredients = ingredientDTOs;
 
             return Ok(potionDTO);
         }
@@ -74,6 +114,13 @@ namespace HogwartsPotions.Controllers
                 if (createdRecipe == null)
                 {
                     return BadRequest($"Errors during the creation of the Recipe for the Potion in {nameof(AddPotion)}, Potion could not be created");
+                }
+
+                foreach (Ingredient ingredient in ingredientsOfPotion)
+                {
+                    await _unitOfWork.ConsistencyRepository.AddAsync(
+                        new Consistency() { IngredientId = ingredient.Id, RecipeId = createdRecipe.Id }
+                    );
                 }
             }
 
