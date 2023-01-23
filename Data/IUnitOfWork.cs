@@ -1,4 +1,4 @@
-﻿using HogwartsPotions.Repositories;
+﻿using HogwartsPotions.Repositories.Interfaces;
 
 namespace HogwartsPotions.Data
 {
@@ -7,6 +7,8 @@ namespace HogwartsPotions.Data
         public IRoomRepository RoomRepository { get; }
         public IStudentRepository StudentRepository { get; }
         public IPotionRepository PotionRepository { get; }
+        public IRecipeRepository RecipeRepository { get; }
+        public IIngredientRepository IngredientRepository { get; }
 
         int Commit();
         Task<int> CommitAsync();

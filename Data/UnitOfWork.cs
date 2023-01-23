@@ -1,4 +1,4 @@
-﻿using HogwartsPotions.Repositories;
+﻿using HogwartsPotions.Repositories.Interfaces;
 
 namespace HogwartsPotions.Data
 {
@@ -9,15 +9,25 @@ namespace HogwartsPotions.Data
         private IRoomRepository _roomRepository;
         private IStudentRepository _studentRepository;
         private IPotionRepository _potionRepository;
+        private IRecipeRepository _recipeRepository;
+        private IIngredientRepository _ingredientRepository;
 
         private bool _disposed = false;
 
-        public UnitOfWork(HogwartsContext context, IRoomRepository roomRepository, IStudentRepository studentRepository, IPotionRepository potionRepository)
+        public UnitOfWork(
+            HogwartsContext context,
+            IRoomRepository roomRepository,
+            IStudentRepository studentRepository,
+            IPotionRepository potionRepository,
+            IRecipeRepository recipeRepository,
+            IIngredientRepository ingredientRepository)
         {
             _context = context;
             _roomRepository = roomRepository;
             _studentRepository = studentRepository;
             _potionRepository = potionRepository;
+            _recipeRepository = recipeRepository;
+            _ingredientRepository = ingredientRepository;
         }
 
 
@@ -41,6 +51,16 @@ namespace HogwartsPotions.Data
         public IPotionRepository PotionRepository
         {
             get { return _potionRepository; }
+        }
+
+        public IRecipeRepository RecipeRepository
+        {
+            get { return _recipeRepository; }
+        }
+
+        public IIngredientRepository IngredientRepository
+        {
+            get { return _ingredientRepository; }
         }
 
         public int Commit()  // use this at adding, updating or deleting an entity

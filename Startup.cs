@@ -1,6 +1,7 @@
 using HogwartsPotions.Configurations;
 using HogwartsPotions.Data;
-using HogwartsPotions.Repositories;
+using HogwartsPotions.Repositories.Implementations;
+using HogwartsPotions.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace HogwartsPotions
@@ -21,9 +22,13 @@ namespace HogwartsPotions
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IPotionRepository, PotionRepository>();
+            services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IIngredientRepository, IngredientRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllers();
