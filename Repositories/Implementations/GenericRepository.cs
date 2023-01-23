@@ -1,8 +1,9 @@
 ﻿using HogwartsPotions.Data;
+using HogwartsPotions.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace HogwartsPotions.Repositories
+namespace HogwartsPotions.Repositories.Implementations
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {

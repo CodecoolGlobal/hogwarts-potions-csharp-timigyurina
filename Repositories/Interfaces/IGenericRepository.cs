@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace HogwartsPotions.Repositories
+namespace HogwartsPotions.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {

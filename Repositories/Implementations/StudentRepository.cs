@@ -1,8 +1,9 @@
 ﻿using HogwartsPotions.Data;
 using HogwartsPotions.Models.Entities;
+using HogwartsPotions.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace HogwartsPotions.Repositories
+namespace HogwartsPotions.Repositories.Implementations
 {
     public class StudentRepository : GenericRepository<Student>, IStudentRepository
     {

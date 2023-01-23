@@ -1,7 +1,7 @@
 ﻿using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
 
-namespace HogwartsPotions.Repositories
+namespace HogwartsPotions.Repositories.Interfaces
 {
     public interface IRoomRepository : IGenericRepository<Room>
     {

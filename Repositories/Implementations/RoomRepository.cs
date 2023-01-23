@@ -1,9 +1,10 @@
 ﻿using HogwartsPotions.Data;
 using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
+using HogwartsPotions.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace HogwartsPotions.Repositories
+namespace HogwartsPotions.Repositories.Implementations
 {
     public class RoomRepository : GenericRepository<Room>, IRoomRepository
     {
@@ -18,7 +19,7 @@ namespace HogwartsPotions.Repositories
 
         public Task<IEnumerable<Room>> GetRoomsOfRatOwners()
         {
-           return GetAllAsync(r => r.Residents.All(res => res.PetType == PetType.None || res.PetType == PetType.Rat)); 
+            return GetAllAsync(r => r.Residents.All(res => res.PetType == PetType.None || res.PetType == PetType.Rat));
         }
 
         public Task<IEnumerable<Room>> GetAvailableOfHouse(HouseType houseType)
