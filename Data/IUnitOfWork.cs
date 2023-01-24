@@ -10,6 +10,7 @@ namespace HogwartsPotions.Data
         public IRecipeRepository RecipeRepository { get; }
         public IIngredientRepository IngredientRepository { get; }
         public IConsistencyRepository ConsistencyRepository { get; }
+        public IPotionIngredientRepository PotionIngredientRepository { get; }
 
         int Commit();
         Task<int> CommitAsync();

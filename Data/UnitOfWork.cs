@@ -12,6 +12,7 @@ namespace HogwartsPotions.Data
         private readonly IRecipeRepository _recipeRepository;
         private readonly IIngredientRepository _ingredientRepository;
         private readonly IConsistencyRepository _consistencyRepository;
+        private readonly IPotionIngredientRepository _potionIngredientRepository;
 
         private bool _disposed = false;
 
@@ -22,7 +23,8 @@ namespace HogwartsPotions.Data
             IPotionRepository potionRepository,
             IRecipeRepository recipeRepository,
             IIngredientRepository ingredientRepository,
-            IConsistencyRepository consistencyRepository)
+            IConsistencyRepository consistencyRepository,
+            IPotionIngredientRepository potionIngredientRepository)
         {
             _context = context;
             _roomRepository = roomRepository;
@@ -31,6 +33,7 @@ namespace HogwartsPotions.Data
             _recipeRepository = recipeRepository;
             _ingredientRepository = ingredientRepository;
             _consistencyRepository = consistencyRepository;
+            _potionIngredientRepository = potionIngredientRepository;
         }
 
 
@@ -55,6 +58,8 @@ namespace HogwartsPotions.Data
         public IIngredientRepository IngredientRepository => _ingredientRepository;
 
         public IConsistencyRepository ConsistencyRepository => _consistencyRepository;
+
+        public IPotionIngredientRepository PotionIngredientRepository => _potionIngredientRepository;
 
         public int Commit()  // use this at adding, updating or deleting an entity
         {
