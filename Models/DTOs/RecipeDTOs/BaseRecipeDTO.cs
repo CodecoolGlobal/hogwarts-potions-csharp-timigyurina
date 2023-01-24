@@ -20,14 +20,14 @@ namespace HogwartsPotions.Models.DTOs.RecipeDTOs
         public HashSet<IngredientDTOWithId> Ingredients { get; set; }
     }
 
-    public class GetRecipeDTO : BaseRecipeDTO
+    public class GetRecipeDTOWithDetails : BaseRecipeDTO  // for GetHalp method in PotionsController
     {
         public int Id { get; set; }
         public StudentDTOWithId Student { get; set; }
         public HashSet<IngredientDTOWithId> Ingredients { get; set; }
     }
 
-    public class RecipeDTOWithId : BaseRecipeDTO  // for getting Potions and Ingredients
+    public class RecipeDTOWithId : BaseRecipeDTO  // for getting Potions and Ingredients (n RecipeDTOWithId)
     {
         public int Id { get; set; }
     }
