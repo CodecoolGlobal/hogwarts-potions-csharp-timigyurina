@@ -93,7 +93,7 @@ namespace HogwartsPotions.Controllers
 
         // POST: api/Potions
         [HttpPost]
-        public async Task<ActionResult<Potion>> AddPotion(AddPotionDTO addPotionDTO)
+        public async Task<ActionResult<GetPotionDTO>> AddPotion(AddPotionDTO addPotionDTO)
         {
             Student? creator = await _unitOfWork.StudentRepository.GetAsync(addPotionDTO.StudentId);
             if (creator == null)
@@ -116,11 +116,10 @@ namespace HogwartsPotions.Controllers
                     return BadRequest($"Errors during the creation of the Recipe for the Potion in {nameof(AddPotion)}, Potion could not be created");
                 }
 
-                foreach (Ingredient ingredient in ingredientsOfPotion)
-                {
-                    await _unitOfWork.ConsistencyRepository.AddAsync(
-                        new Consistency() { IngredientId = ingredient.Id, RecipeId = createdRecipe.Id }
-                    );
+                // only add new Consistencies if Recipe did not exist before
+                bool successfullyCreatedConsistencies = await _unitOfWork.ConsistencyRepository.AddMoreForNewRecipe(createdRecipe.Id, ingredientsOfPotion);
+
+                if (!successfullyCreatedConsistencies) { return  BadRequest($"Errors during the creation of the Consistencies for the Potion in {nameof(AddPotion)}, Potion could not be created"); }
                 }
             }
 
