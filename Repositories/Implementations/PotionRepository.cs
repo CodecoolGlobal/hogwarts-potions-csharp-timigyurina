@@ -2,6 +2,7 @@
 using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
 using HogwartsPotions.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace HogwartsPotions.Repositories.Implementations
@@ -35,10 +36,20 @@ namespace HogwartsPotions.Repositories.Implementations
         public Task<Potion?> GetPotionWithDetails(int id)
         {
             return _context.Potions
+                .Include(p => p.Student)
                 .Include(p => p.Recipe)
-                    .ThenInclude(r => r.Consistencies)
-                        .ThenInclude(c => c.Ingredient)
+                    //.ThenInclude(r => r.Consistencies)
+                    //    .ThenInclude(c => c.Ingredient)
+                .Include(p => p.PotionIngredients)
+                    .ThenInclude(pi => pi.Ingredient)
                 .AsNoTracking()
+                .FirstOrDefaultAsync(q => q.Id == id);
+        }
+        
+        public Task<Potion?> GetPotionWithPotionIngredients(int id)
+        {
+            return _context.Potions
+                .Include(p => p.PotionIngredients)
                 .FirstOrDefaultAsync(q => q.Id == id);
         }
 
@@ -55,7 +66,7 @@ namespace HogwartsPotions.Repositories.Implementations
             return await AddAsync(startedPotion);
         }
 
-        public async Task<Potion?> UpdateBrewingStatusBasedOnIngredients(int potionId, bool hasRecipeExisted)
+        public async Task<Potion?> UpdateBasedOnAddedIngredient(int potionId, BrewingStatus brewingStatus, Recipe? recipe)
         {
             Potion?potionToBeUpdated = await _dbSet
                 .Include(p => p.PotionIngredients)
@@ -66,7 +77,13 @@ namespace HogwartsPotions.Repositories.Implementations
 
             if (potionToBeUpdated.PotionIngredients.Count > 4)
             {
-                potionToBeUpdated.BrewingStatus = hasRecipeExisted ? BrewingStatus.Replica : BrewingStatus.Discovery;
+                potionToBeUpdated.BrewingStatus = brewingStatus;
+                if (recipe != null)
+                {
+                    potionToBeUpdated.RecipeId = recipe.Id;
+                    potionToBeUpdated.Recipe = recipe;
+                    potionToBeUpdated.Name = $"Student#{potionToBeUpdated.StudentId}'s {brewingStatus} #{potionToBeUpdated.StudentId}{recipe.Id}";
+                }
                 await UpdateAsync(potionToBeUpdated);
             }
             return potionToBeUpdated;

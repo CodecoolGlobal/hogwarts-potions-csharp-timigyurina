@@ -66,7 +66,7 @@ namespace HogwartsPotions.Controllers
 
         // GET: api/Potions/details/5
         [HttpGet("details/{id}")]
-        public async Task<ActionResult<GetPotionDTOWithDetails>> GetPotionWithDetails(int id)
+        public async Task<ActionResult<GetPotionDTOWithRecipeAndPotionIngredientDetails>> GetPotionWithDetails(int id)
         {
             Potion? potion = await _unitOfWork.PotionRepository.GetPotionWithDetails(id);
 
@@ -75,15 +75,15 @@ namespace HogwartsPotions.Controllers
                 return NotFound("Potion was not found");
             }
 
-            HashSet<Ingredient>? ingredients = await _unitOfWork.RecipeRepository.GetIngredientsOfRecipe(potion.RecipeId);
-            if (ingredients == null)
-            {
-                return NotFound($"No recipe with the id of {potion.RecipeId} was found");
-            }
+            //HashSet<Ingredient>? ingredients = await _unitOfWork.RecipeRepository.GetIngredientsOfRecipe(potion.RecipeId);
+            //if (ingredients == null)
+            //{
+            //    return NotFound($"No recipe with the id of {potion.RecipeId} was found");
+            //}
 
-            GetPotionDTOWithDetails potionDTO = _mapper.Map<GetPotionDTOWithDetails>(potion);
-            HashSet<IngredientDTOWithId> ingredientDTOs = _mapper.Map<HashSet<IngredientDTOWithId>>(ingredients);
-            potionDTO.Ingredients = ingredientDTOs;
+            GetPotionDTOWithRecipeAndPotionIngredientDetails potionDTO = _mapper.Map<GetPotionDTOWithRecipeAndPotionIngredientDetails>(potion);
+            //HashSet<IngredientDTOWithId> ingredientDTOs = _mapper.Map<HashSet<IngredientDTOWithId>>(ingredients);
+            //potionDTO.Ingredients = ingredientDTOs;
 
             return Ok(potionDTO);
         }
@@ -152,7 +152,7 @@ namespace HogwartsPotions.Controllers
         [HttpPut("{potionId}/addIngredient")]
         public async Task<ActionResult<GetPotionDTOWithDetails>> AddIngredient(int potionId, IngredientDTO ingredientDTO)
         {
-            Potion? potionToBeUpdated = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId);
+            Potion? potionToBeUpdated = await _unitOfWork.PotionRepository.GetAsync(potionId);
             if (potionToBeUpdated == null)
                 return NotFound($"No potion with the id of {potionId} was found");
 
@@ -169,23 +169,34 @@ namespace HogwartsPotions.Controllers
                 new PotionIngredient() { IngredientId = ingredientToBeAdded.Id, PotionId = potionToBeUpdated.Id }
             );
 
-            HashSet<Ingredient> ingredientsOfPotionToBeUpdated = await _unitOfWork.IngredientRepository.GetIngredientsOfPotion(potionToBeUpdated);
+            Potion? potionToBeUpdatedWithPotionIngredients = await _unitOfWork.PotionRepository.GetPotionWithPotionIngredients(potionId);
+            BrewingStatus statusAfterAddingIngredient = BrewingStatus.Brew;
+            Recipe? recipeAfterAddingIngredient = null;  // a Recipe will be assigned if the Potion has at least 5 ingredients (it was either found or created) 
 
-            (Recipe, bool) recipeForPotionAndExistency;
-            try
+            // Only check for Recipe if the Potion contains at least 5 ingredients (implicitly, a Recipe must contain at least 5 ingredients)
+            if (potionToBeUpdatedWithPotionIngredients != null && potionToBeUpdatedWithPotionIngredients.PotionIngredients.Count > 4)
             {
-                recipeForPotionAndExistency = await CheckRecipeAndCreateIfNotExists(potionToBeUpdated.StudentId, ingredientsOfPotionToBeUpdated);
-            }
-            catch (Exception exc)
-            {
-                return BadRequest(exc.Message);
+                HashSet<Ingredient> ingredientsOfPotionToBeUpdated = await _unitOfWork.IngredientRepository.GetIngredientsOfPotion(potionToBeUpdatedWithPotionIngredients);
+
+                (Recipe, bool) recipeForPotionAndExistency;
+                try
+                {
+                    recipeForPotionAndExistency = await CheckRecipeAndCreateIfNotExists(potionToBeUpdated.StudentId, ingredientsOfPotionToBeUpdated);
+                    statusAfterAddingIngredient = recipeForPotionAndExistency.Item2 ? BrewingStatus.Replica : BrewingStatus.Discovery; // true if the Recipe already existed
+                    recipeAfterAddingIngredient = recipeForPotionAndExistency.Item1;
+                }
+                catch (Exception exc)
+                {
+                    return BadRequest(exc.Message);
+                }
             }
 
-            Potion? updatedPotion = await _unitOfWork.PotionRepository.UpdateBrewingStatusBasedOnIngredients(potionId, recipeForPotionAndExistency.Item2); // true if already existed
+            Potion? updatedPotion = await _unitOfWork.PotionRepository.UpdateBasedOnAddedIngredient(potionId, statusAfterAddingIngredient, recipeAfterAddingIngredient); 
             if (updatedPotion == null)
                 return BadRequest($"There were some errors during the update of the Potion in {nameof(AddPotion)}, Potion could not be updated");
 
-            GetPotionDTOWithDetails updatedPotionDTO = _mapper.Map<GetPotionDTOWithDetails>(updatedPotion);
+            Potion? updatedPotionWithMoreDetails = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId); // just to be able to view everything in the response
+            GetPotionDTOWithRecipeAndPotionIngredientDetails updatedPotionDTO = _mapper.Map<GetPotionDTOWithRecipeAndPotionIngredientDetails>(updatedPotionWithMoreDetails);
 
             return Ok(updatedPotionDTO);
         }

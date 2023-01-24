@@ -8,7 +8,8 @@ namespace HogwartsPotions.Repositories.Interfaces
         Task<Potion?> CreateNewAsync(Student creator, BrewingStatus brewingStatus, Recipe recipe);
         Task<IEnumerable<Potion>> GetStudentPotions(int studentId);
         Task<Potion?> GetPotionWithDetails(int id);
+        Task<Potion?> GetPotionWithPotionIngredients(int id);
         Task<Potion?> StartBrewing(Student creator);
-        Task<Potion?> UpdateBrewingStatusBasedOnIngredients(int potionId, bool hasRecipeExisted);
+        Task<Potion?> UpdateBasedOnAddedIngredient(int potionId, BrewingStatus brewingStatus, Recipe? recipe);
     }
 }
