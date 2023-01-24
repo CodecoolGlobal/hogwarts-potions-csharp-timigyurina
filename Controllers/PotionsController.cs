@@ -5,9 +5,8 @@ using HogwartsPotions.Models.DTOs.PotionDTOs;
 using HogwartsPotions.Models.DTOs.RecipeDTOs;
 using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace HogwartsPotions.Controllers
 {
@@ -30,11 +29,11 @@ namespace HogwartsPotions.Controllers
         public async Task<ActionResult<IEnumerable<GetPotionDTO>>> GetAllPotions()
         {
             IEnumerable<Potion> potions = await _unitOfWork.PotionRepository.GetAllAsync();
-            IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions); 
+            IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions);
             return Ok(potionDTOs);
         }
-        
-        
+
+
         // GET: api/Potions/student/1
         [HttpGet("student/{studentId}")]
         public async Task<ActionResult<IEnumerable<GetPotionDTO>>> GetStudentPotions(int studentId)
@@ -45,7 +44,7 @@ namespace HogwartsPotions.Controllers
                 return BadRequest($"There is no student with the id of {studentId}");
             }
             IEnumerable<Potion> potions = await _unitOfWork.PotionRepository.GetStudentPotions(studentId);
-            IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions); 
+            IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions);
             return Ok(potionDTOs);
         }
 
@@ -89,50 +88,39 @@ namespace HogwartsPotions.Controllers
             return Ok(potionDTO);
         }
 
-
-
         // POST: api/Potions
         [HttpPost]
         public async Task<ActionResult<GetPotionDTO>> AddPotion(AddPotionDTO addPotionDTO)
         {
             Student? creator = await _unitOfWork.StudentRepository.GetAsync(addPotionDTO.StudentId);
             if (creator == null)
-            {
-                return BadRequest($"Student with the id of {addPotionDTO.StudentId} does not exist");
-            }
+                throw new Exception($"Student with the id of {creator.Id} does not exist");
 
             HashSet<Ingredient> ingredientsOfPotion = _mapper.Map<HashSet<Ingredient>>(addPotionDTO.Ingredients);
 
-            Recipe? existingRecipe = await _unitOfWork.RecipeRepository.CheckIfRecipeExistsWithIngredients(ingredientsOfPotion);
-            bool recipeExists = existingRecipe != null;
-
-            Recipe? createdRecipe = new();
-            if (!recipeExists)
+            (Recipe, bool) recipeForPotionAndExistency;
+            try
             {
-                createdRecipe = await _unitOfWork.RecipeRepository.CreateNewAsync(creator);
-
-                if (createdRecipe == null)
-                {
-                    return BadRequest($"Errors during the creation of the Recipe for the Potion in {nameof(AddPotion)}, Potion could not be created");
-                }
-
-                // only add new Consistencies if Recipe did not exist before
-                bool successfullyCreatedConsistencies = await _unitOfWork.ConsistencyRepository.AddMoreForNewRecipe(createdRecipe.Id, ingredientsOfPotion);
-
-                if (!successfullyCreatedConsistencies) { return BadRequest($"Errors during the creation of the Consistencies for the Potion in {nameof(AddPotion)}, Potion could not be created"); }
-                }
+                recipeForPotionAndExistency = await CheckRecipeAndCreateIfNotExists(addPotionDTO.StudentId, ingredientsOfPotion);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest(exc.Message);
             }
 
+            BrewingStatus brewingStatus = addPotionDTO.Ingredients.Count < 5 ? BrewingStatus.Brew : (recipeForPotionAndExistency.Item2 ? BrewingStatus.Replica : BrewingStatus.Discovery);
 
-            BrewingStatus brewingStatus = addPotionDTO.Ingredients.Count < 5 ? BrewingStatus.Brew : (recipeExists ? BrewingStatus.Replica : BrewingStatus.Discovery);
-
-            Recipe? recipeForPotion = recipeExists ? existingRecipe : createdRecipe;
-            Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, brewingStatus, recipeForPotion!);
+            Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, brewingStatus, recipeForPotionAndExistency.Item1!);
 
             if (createdPotion == null)
-            {
                 return BadRequest($"There were some errors during the creation of the Potion in {nameof(AddPotion)}, Potion could not be created");
-            }
+
+
+            // only add new PotionIngredients if Potion has been successfully created
+            bool successfullyCreatedPotionIngredients = await _unitOfWork.PotionIngredientRepository.AddMoreForNewPotion(createdPotion.Id, ingredientsOfPotion);
+
+            if (!successfullyCreatedPotionIngredients)
+                return BadRequest($"Errors during the creation of the PotionIngredients for the Potion in {nameof(AddPotion)}");
 
             GetPotionDTO createdPotionDTO = _mapper.Map<GetPotionDTO>(createdPotion);
 
@@ -158,6 +146,95 @@ namespace HogwartsPotions.Controllers
             GetPotionDTOWithDetails startedPotionDTO = _mapper.Map<GetPotionDTOWithDetails>(startedPotion);
 
             return CreatedAtAction("GetPotionById", new { id = startedPotion.Id }, startedPotionDTO);
+        }
+
+        // PUT: api/Potions/10/addaddIngredient
+        [HttpPut("{potionId}/addIngredient")]
+        public async Task<ActionResult<GetPotionDTOWithDetails>> AddIngredient(int potionId, IngredientDTO ingredientDTO)
+        {
+            Potion? potionToBeUpdated = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId);
+            if (potionToBeUpdated == null)
+                return NotFound($"No potion with the id of {potionId} was found");
+
+            Ingredient? ingredientToBeAdded = _unitOfWork.IngredientRepository.GetIngredientByName(ingredientDTO.Name);
+            if (ingredientToBeAdded == null)
+            {
+                ingredientToBeAdded = await _unitOfWork.IngredientRepository.AddAsync(new Ingredient() { Name = ingredientDTO.Name.ToLower() });
+                if (ingredientToBeAdded == null)
+                    return BadRequest($"Ingredient could not be created.");
+            }
+
+
+            PotionIngredient? addedPotionIngredient = await _unitOfWork.PotionIngredientRepository.AddAsync(
+                new PotionIngredient() { IngredientId = ingredientToBeAdded.Id, PotionId = potionToBeUpdated.Id }
+            );
+
+            HashSet<Ingredient> ingredientsOfPotionToBeUpdated = await _unitOfWork.IngredientRepository.GetIngredientsOfPotion(potionToBeUpdated);
+
+            (Recipe, bool) recipeForPotionAndExistency;
+            try
+            {
+                recipeForPotionAndExistency = await CheckRecipeAndCreateIfNotExists(potionToBeUpdated.StudentId, ingredientsOfPotionToBeUpdated);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest(exc.Message);
+            }
+
+            Potion? updatedPotion = await _unitOfWork.PotionRepository.UpdateBrewingStatusBasedOnIngredients(potionId, recipeForPotionAndExistency.Item2); // true if already existed
+            if (updatedPotion == null)
+                return BadRequest($"There were some errors during the update of the Potion in {nameof(AddPotion)}, Potion could not be updated");
+
+            GetPotionDTOWithDetails updatedPotionDTO = _mapper.Map<GetPotionDTOWithDetails>(updatedPotion);
+
+            return Ok(updatedPotionDTO);
+        }
+
+
+        // GET: api/Potions/10/help
+        [HttpGet("{potionId}/help")]
+        public async Task<ActionResult<IEnumerable<GetRecipeDTOWithDetails>>> GetHelp(IngredientDTOWithId ingredientDTO)
+        {
+            return NoContent();
+        }
+
+
+
+        private async Task<Recipe> CreateRecipeAndConsistencies(int creatorId, HashSet<Ingredient> ingredients)
+        {
+            Student? creator = await _unitOfWork.StudentRepository.GetAsync(creatorId);
+            if (creator == null)
+                throw new Exception($"Student with the id of {creatorId} does not exist");
+
+            Recipe? createdRecipe = await _unitOfWork.RecipeRepository.CreateNewAsync(creator);
+
+            if (createdRecipe == null)
+                throw new Exception($"Errors during the creation of the Recipe for the Potion in {nameof(CreateRecipeAndConsistencies)}, Potion could not be created");
+
+            // only add new Consistencies if Recipe did not exist before
+            bool successfullyCreatedConsistencies = await _unitOfWork.ConsistencyRepository.AddMoreForNewRecipe(createdRecipe.Id, ingredients);
+
+            if (!successfullyCreatedConsistencies)
+                throw new Exception($"Errors during the creation of the Consistencies for the Potion in {nameof(CreateRecipeAndConsistencies)}, Potion could not be created");
+
+            return createdRecipe;
+        }
+
+        private async Task<(Recipe, bool)> CheckRecipeAndCreateIfNotExists(int creatorId, HashSet<Ingredient> ingredients)
+        {
+            Recipe? existingRecipe = await _unitOfWork.RecipeRepository.CheckIfRecipeExistsWithIngredients(ingredients);
+            if (existingRecipe != null)
+                return (existingRecipe, true);
+
+            try
+            {
+                Recipe createdRecipe = await CreateRecipeAndConsistencies(creatorId, ingredients);
+                return (createdRecipe, false);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
