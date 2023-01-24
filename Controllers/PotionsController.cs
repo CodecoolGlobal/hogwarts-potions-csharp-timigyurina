@@ -127,8 +127,8 @@ namespace HogwartsPotions.Controllers
 
             BrewingStatus brewingStatus = addPotionDTO.Ingredients.Count < 5 ? BrewingStatus.Brew : (recipeExists ? BrewingStatus.Replica : BrewingStatus.Discovery);
 
-            Recipe recipeForPotion = recipeExists ? existingRecipe : createdRecipe;
-            Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, brewingStatus, recipeForPotion);
+            Recipe? recipeForPotion = recipeExists ? existingRecipe : createdRecipe;
+            Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, brewingStatus, recipeForPotion!);
 
             if (createdPotion == null)
             {
@@ -140,6 +140,25 @@ namespace HogwartsPotions.Controllers
             return CreatedAtAction("GetPotionById", new { id = createdPotion.Id }, createdPotionDTO);
         }
 
+        // POST: api/Potions/brew/2
+        [HttpPost("brew/{studentId}")]
+        public async Task<ActionResult<Potion>> StartBrewing(int studentId)
+        {
+            Student? creator = await _unitOfWork.StudentRepository.GetAsync(studentId);
+            if (creator == null)
+            {
+                return BadRequest($"Student with the id of {studentId} does not exist");
+            }
 
+            Potion? startedPotion = await _unitOfWork.PotionRepository.StartBrewing(creator);
+            if (startedPotion == null)
+            {
+                return BadRequest($"There were some errors during the brew of the Potion in {nameof(StartBrewing)}, Potion could not be created");
+            }
+
+            GetPotionDTOWithDetails startedPotionDTO = _mapper.Map<GetPotionDTOWithDetails>(startedPotion);
+
+            return CreatedAtAction("GetPotionById", new { id = startedPotion.Id }, startedPotionDTO);
+        }
     }
 }

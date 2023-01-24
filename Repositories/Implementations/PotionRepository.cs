@@ -41,5 +41,18 @@ namespace HogwartsPotions.Repositories.Implementations
                 .AsNoTracking()
                 .FirstOrDefaultAsync(q => q.Id == id);
         }
+
+        public async Task<Potion?> StartBrewing(Student creator)
+        {
+            Potion startedPotion = new Potion()
+            {
+                StudentId = creator.Id,
+                BrewingStatus = BrewingStatus.Brew,
+                Name = $"{creator.Name}'s freshly started {BrewingStatus.Brew}",
+                RecipeId = null,
+            };
+
+            return await AddAsync(startedPotion);
+        }
     }
 }
