@@ -24,7 +24,12 @@ namespace HogwartsPotions.Models.DTOs.RecipeDTOs
     {
         public int Id { get; set; }
         public StudentDTOWithId Student { get; set; }
+
+
+
+        public ICollection<ConsistencyDTO> Consistencies { get; set; }
         public HashSet<IngredientDTOWithId> Ingredients { get; set; }
+
     }
 
     public class RecipeDTOWithId : BaseRecipeDTO  // for getting Potions and Ingredients (n RecipeDTOWithId)

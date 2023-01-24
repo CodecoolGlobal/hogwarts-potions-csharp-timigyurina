@@ -22,10 +22,15 @@ namespace HogwartsPotions.Configurations
 
             CreateMap<Potion, GetPotionDTO>().ReverseMap();
             CreateMap<Potion, GetPotionDTOWithDetails>().ReverseMap();
+            CreateMap<Potion, GetPotionDTOWithRecipeAndPotionIngredientDetails>().ReverseMap();
 
             CreateMap<Ingredient, IngredientDTOWithId>().ReverseMap();
 
             CreateMap<Recipe, RecipeDTOWithId>().ReverseMap();
+            CreateMap<Recipe, GetRecipeDTOWithDetails>().ReverseMap();
+
+            CreateMap<PotionIngredient, PotionIngredientDTO>().ReverseMap();
+            CreateMap<Consistency, ConsistencyDTO>().ReverseMap();
         }
     }
 }
