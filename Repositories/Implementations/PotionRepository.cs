@@ -54,5 +54,23 @@ namespace HogwartsPotions.Repositories.Implementations
 
             return await AddAsync(startedPotion);
         }
+
+        public async Task<Potion?> UpdateBrewingStatusBasedOnIngredients(int potionId, bool hasRecipeExisted)
+        {
+            Potion?potionToBeUpdated = await _dbSet
+                .Include(p => p.PotionIngredients)
+                .FirstOrDefaultAsync(p => p.Id == potionId);
+
+            if (potionToBeUpdated == null)
+                return null;
+
+            if (potionToBeUpdated.PotionIngredients.Count > 4)
+            {
+                potionToBeUpdated.BrewingStatus = hasRecipeExisted ? BrewingStatus.Replica : BrewingStatus.Discovery;
+                await UpdateAsync(potionToBeUpdated);
+            }
+            return potionToBeUpdated;
+
+        }
     }
 }
