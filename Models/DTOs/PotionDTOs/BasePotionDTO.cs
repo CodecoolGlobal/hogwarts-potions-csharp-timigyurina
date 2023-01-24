@@ -9,7 +9,6 @@ namespace HogwartsPotions.Models.DTOs.PotionDTOs
     {
         [Required]
         public int StudentId { get; set; }
-
     }
 
     public class AddPotionDTO : BasePotionDTO
@@ -23,7 +22,7 @@ namespace HogwartsPotions.Models.DTOs.PotionDTOs
         public string Name { get; set; }
         public string BrewingStatus { get; set; }
 
-        public int RecipeId { get; set; }
+        public int? RecipeId { get; set; }
     }
 
     public class GetPotionDTOWithDetails : BasePotionDTO  // for Get with details
@@ -35,9 +34,9 @@ namespace HogwartsPotions.Models.DTOs.PotionDTOs
         public StudentDTOWithId Student { get; set; }
 
 
-        public int RecipeId { get; set; }
-        public RecipeDTOWithId Recipe { get; set; }
+        public int? RecipeId { get; set; }
+        public RecipeDTOWithId? Recipe { get; set; }
 
-        public HashSet<IngredientDTOWithId> Ingredients { get; set; }
+        public HashSet<IngredientDTOWithId> Ingredients { get; set; } = new HashSet<IngredientDTOWithId>();
     }
 }

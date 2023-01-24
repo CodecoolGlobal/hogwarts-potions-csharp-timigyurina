@@ -23,9 +23,9 @@ namespace HogwartsPotions.Models.Entities
 
 
         [ForeignKey(nameof(RecipeId))]
-        [Required]
-        public int RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
+       // [Required]
+        public int? RecipeId { get; set; }
+        public Recipe? Recipe { get; set; }
 
         //public HashSet<Ingredient> Ingredients { get; set; } = new HashSet<Ingredient>();
     }
