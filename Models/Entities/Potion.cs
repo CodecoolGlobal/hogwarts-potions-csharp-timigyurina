@@ -27,6 +27,7 @@ namespace HogwartsPotions.Models.Entities
         public int? RecipeId { get; set; }
         public Recipe? Recipe { get; set; }
 
-        //public HashSet<Ingredient> Ingredients { get; set; } = new HashSet<Ingredient>();
+        
+        public HashSet<PotionIngredient> PotionIngredients { get; set; }
     }
 }

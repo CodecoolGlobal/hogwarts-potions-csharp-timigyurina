@@ -14,6 +14,7 @@ namespace HogwartsPotions.Models.Entities
         public string Name { get; set; }
 
         public ICollection<Consistency> Consistencies { get; set; }
+        public HashSet<PotionIngredient> PotionIngredients { get; set; }
     }
 
 }
