@@ -35,6 +35,11 @@ namespace HogwartsPotions
 
             services.AddControllers();
 
+            services.AddCors(options => options.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }));
+
             services.AddAutoMapper(typeof(AutoMapperConfig)); // register AutoMapper
         }
 
@@ -55,6 +60,8 @@ namespace HogwartsPotions
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
