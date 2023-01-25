@@ -159,6 +159,9 @@ namespace HogwartsPotions.Controllers
                     return BadRequest($"Ingredient could not be created.");
             }
 
+            bool alreadyContainsIngredient = _unitOfWork.PotionIngredientRepository.CheckIfContains(potionId, ingredientToBeAdded.Id);
+            if (alreadyContainsIngredient)
+                return BadRequest($"Potion already contains this Ingredient");
 
             PotionIngredient? addedPotionIngredient = await _unitOfWork.PotionIngredientRepository.AddAsync(
                 new PotionIngredient() { IngredientId = ingredientToBeAdded.Id, PotionId = potionToBeUpdated.Id }

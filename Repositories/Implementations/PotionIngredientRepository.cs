@@ -23,5 +23,10 @@ namespace HogwartsPotions.Repositories.Implementations
 
             return addedPotionIngredients.Count == ingredientsOfPotion.Count;
         }
+
+        public bool CheckIfContains(int potionId, int ingredientId)
+        {
+            return _dbSet.FirstOrDefault(pi => pi.PotionId == potionId && pi.IngredientId == ingredientId) != null;
+        }
     }
 }
