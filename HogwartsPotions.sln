@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HogwartsPotions", "HogwartsPotions.csproj", "{041C6BB6-270F-48C0-8380-B9267D432B29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HogwartsPotions", "HogwartsPotions.csproj", "{041C6BB6-270F-48C0-8380-B9267D432B29}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "hogwartspotions_frontend", "hogwartspotions_frontend\hogwartspotions_frontend.esproj", "{883450D5-AB19-4D98-9DEA-5D77B1EECACB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,12 @@ Global
 		{041C6BB6-270F-48C0-8380-B9267D432B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{041C6BB6-270F-48C0-8380-B9267D432B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{041C6BB6-270F-48C0-8380-B9267D432B29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883450D5-AB19-4D98-9DEA-5D77B1EECACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{883450D5-AB19-4D98-9DEA-5D77B1EECACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{883450D5-AB19-4D98-9DEA-5D77B1EECACB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{883450D5-AB19-4D98-9DEA-5D77B1EECACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{883450D5-AB19-4D98-9DEA-5D77B1EECACB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883450D5-AB19-4D98-9DEA-5D77B1EECACB}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
