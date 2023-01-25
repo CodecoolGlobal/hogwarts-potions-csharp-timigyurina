@@ -71,19 +71,10 @@ namespace HogwartsPotions.Controllers
             Potion? potion = await _unitOfWork.PotionRepository.GetPotionWithDetails(id);
 
             if (potion == null)
-            {
                 return NotFound("Potion was not found");
-            }
 
-            //HashSet<Ingredient>? ingredients = await _unitOfWork.RecipeRepository.GetIngredientsOfRecipe(potion.RecipeId);
-            //if (ingredients == null)
-            //{
-            //    return NotFound($"No recipe with the id of {potion.RecipeId} was found");
-            //}
-
+            // could also use IngredientRepository.GetIngredientsOfPotion method (but with searching for the Potion with the GetPotionWithDetails method, the Ingredients will also be included! - thanks to PotionIngredients joint table:))
             GetPotionDTOWithRecipeAndPotionIngredientDetails potionDTO = _mapper.Map<GetPotionDTOWithRecipeAndPotionIngredientDetails>(potion);
-            //HashSet<IngredientDTOWithId> ingredientDTOs = _mapper.Map<HashSet<IngredientDTOWithId>>(ingredients);
-            //potionDTO.Ingredients = ingredientDTOs;
 
             return Ok(potionDTO);
         }
@@ -97,24 +88,28 @@ namespace HogwartsPotions.Controllers
                 throw new Exception($"Student with the id of {addPotionDTO.StudentId} does not exist");
 
             HashSet<Ingredient> ingredientsOfPotion = _mapper.Map<HashSet<Ingredient>>(addPotionDTO.Ingredients);
-
-            (Recipe, bool) recipeForPotionAndExistency;
-            try
+            BrewingStatus statusOfPotionToBeCreated = BrewingStatus.Brew;
+            Recipe? recipeOfPotionToBeCreated = null;  // a Recipe will be assigned if the Potion has at least 5 ingredients (it was either found or created) 
+            // Only check for Recipe if the Potion contains at least 5 ingredients (implicitly, a Recipe must contain at least 5 ingredients)
+            if (addPotionDTO.Ingredients.Count > 4)
             {
-                recipeForPotionAndExistency = await CheckRecipeAndCreateIfNotExists(addPotionDTO.StudentId, ingredientsOfPotion);
-            }
-            catch (Exception exc)
-            {
-                return BadRequest(exc.Message);
+                (Recipe, bool) recipeForPotionAndExistency;
+                try
+                {
+                    recipeForPotionAndExistency = await CheckRecipeAndCreateIfNotExists(addPotionDTO.StudentId, ingredientsOfPotion); // returns either (existingRecipe,true) or (createdRecipe,false)
+                    statusOfPotionToBeCreated = recipeForPotionAndExistency.Item2 ? BrewingStatus.Replica : BrewingStatus.Discovery; // true if the Recipe already existed
+                    recipeOfPotionToBeCreated = recipeForPotionAndExistency.Item1;
+                }
+                catch (Exception exc)
+                {
+                    return BadRequest(exc.Message);
+                }
             }
 
-            BrewingStatus brewingStatus = addPotionDTO.Ingredients.Count < 5 ? BrewingStatus.Brew : (recipeForPotionAndExistency.Item2 ? BrewingStatus.Replica : BrewingStatus.Discovery);
-
-            Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, brewingStatus, recipeForPotionAndExistency.Item1!);
+            Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, statusOfPotionToBeCreated, recipeOfPotionToBeCreated);
 
             if (createdPotion == null)
                 return BadRequest($"There were some errors during the creation of the Potion in {nameof(AddPotion)}, Potion could not be created");
-
 
             // only add new PotionIngredients if Potion has been successfully created
             bool successfullyCreatedPotionIngredients = await _unitOfWork.PotionIngredientRepository.AddMoreForNewPotion(createdPotion.Id, ingredientsOfPotion);
@@ -191,7 +186,7 @@ namespace HogwartsPotions.Controllers
                 }
             }
 
-            Potion? updatedPotion = await _unitOfWork.PotionRepository.UpdateBasedOnAddedIngredient(potionId, statusAfterAddingIngredient, recipeAfterAddingIngredient); 
+            Potion? updatedPotion = await _unitOfWork.PotionRepository.UpdateBasedOnAddedIngredient(potionId, statusAfterAddingIngredient, recipeAfterAddingIngredient);
             if (updatedPotion == null)
                 return BadRequest($"There were some errors during the update of the Potion in {nameof(AddPotion)}, Potion could not be updated");
 
@@ -212,7 +207,7 @@ namespace HogwartsPotions.Controllers
             //if (potion.PotionIngredients.Count > 4)
             //    return BadRequest("The Potion already contains at least 5 Ingredients");
 
-            IEnumerable<Ingredient> ingredientsOfPotion = potion.PotionIngredients.Select(p => p.Ingredient); // could also use IngredientRepository.GetIngredientsOfPotion method
+            IEnumerable<Ingredient> ingredientsOfPotion = potion.PotionIngredients.Select(p => p.Ingredient); // see comment in GetPotionWithDetails above
             IEnumerable<Recipe> recipesWithIngredients = _unitOfWork.RecipeRepository.GetRecipesWithIngredients(ingredientsOfPotion);
 
             IEnumerable<GetRecipeDTOWithDetails> recipeDTOs = _mapper.Map<IEnumerable<GetRecipeDTOWithDetails>>(recipesWithIngredients);
