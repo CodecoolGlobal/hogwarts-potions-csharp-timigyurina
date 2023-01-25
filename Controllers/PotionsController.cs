@@ -238,7 +238,7 @@ namespace HogwartsPotions.Controllers
 
         private async Task<(Recipe, bool)> CheckRecipeAndCreateIfNotExists(int creatorId, HashSet<Ingredient> ingredients)
         {
-            Recipe? existingRecipe = _unitOfWork.RecipeRepository.CheckIfRecipeExistsWithIngredients(ingredients);
+            Recipe? existingRecipe = await _unitOfWork.RecipeRepository.CheckIfRecipeExistsWithIngredients(ingredients);
             if (existingRecipe != null)
                 return (existingRecipe, true);
 

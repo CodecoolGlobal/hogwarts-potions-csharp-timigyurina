@@ -11,7 +11,7 @@ namespace HogwartsPotions.Repositories.Implementations
         {
         }
 
-        public Recipe? CheckIfRecipeExistsWithIngredients(IEnumerable<Ingredient> ingredients)
+        public async Task<Recipe?> CheckIfRecipeExistsWithIngredients(IEnumerable<Ingredient> ingredients)
         {
             IEnumerable<Recipe> detailedRecipesWithIngredientCount = _context.Recipes.Where(r => r.Consistencies.Count() == ingredients.Count())
                 .Include(r => r.Consistencies)
@@ -27,8 +27,8 @@ namespace HogwartsPotions.Repositories.Implementations
 
                 if (areAllIngredientsInRecipe)
                 {
-
-                    return recipe;
+                    Recipe? r = await GetAsync(recipe.Id);  // Need to fetch the Recipe again but WITHOUT Consistencies - because when updating the Potion (in AddIngredient method of PotionsController), its Recipe is also updtaed and if it was fetched with its Consistencies, then the same Consistencies would also be updated and an error would be thrown (because Consistencies are a HashSet and duplicate keys(RecipeId, ingredientId) are not allowed).
+                    return r;
                 }
 
             }
