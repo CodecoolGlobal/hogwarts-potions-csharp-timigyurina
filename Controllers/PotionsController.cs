@@ -94,7 +94,7 @@ namespace HogwartsPotions.Controllers
         {
             Student? creator = await _unitOfWork.StudentRepository.GetAsync(addPotionDTO.StudentId);
             if (creator == null)
-                throw new Exception($"Student with the id of {creator.Id} does not exist");
+                throw new Exception($"Student with the id of {addPotionDTO.StudentId} does not exist");
 
             HashSet<Ingredient> ingredientsOfPotion = _mapper.Map<HashSet<Ingredient>>(addPotionDTO.Ingredients);
 
@@ -204,9 +204,19 @@ namespace HogwartsPotions.Controllers
 
         // GET: api/Potions/10/help
         [HttpGet("{potionId}/help")]
-        public async Task<ActionResult<IEnumerable<GetRecipeDTOWithDetails>>> GetHelp(IngredientDTOWithId ingredientDTO)
+        public async Task<ActionResult<IEnumerable<GetRecipeDTOWithDetails>>> GetHelp(int potionId)
         {
-            return NoContent();
+            Potion? potion = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId);
+            if (potion == null)
+                return NotFound($"No potion with the id of {potionId} was found");
+            //if (potion.PotionIngredients.Count > 4)
+            //    return BadRequest("The Potion already contains at least 5 Ingredients");
+
+            IEnumerable<Ingredient> ingredientsOfPotion = potion.PotionIngredients.Select(p => p.Ingredient); // could also use IngredientRepository.GetIngredientsOfPotion method
+            IEnumerable<Recipe> recipesWithIngredients = _unitOfWork.RecipeRepository.GetRecipesWithIngredients(ingredientsOfPotion);
+
+            IEnumerable<GetRecipeDTOWithDetails> recipeDTOs = _mapper.Map<IEnumerable<GetRecipeDTOWithDetails>>(recipesWithIngredients);
+            return Ok(recipeDTOs);
         }
 
 
@@ -233,7 +243,7 @@ namespace HogwartsPotions.Controllers
 
         private async Task<(Recipe, bool)> CheckRecipeAndCreateIfNotExists(int creatorId, HashSet<Ingredient> ingredients)
         {
-            Recipe? existingRecipe = await _unitOfWork.RecipeRepository.CheckIfRecipeExistsWithIngredients(ingredients);
+            Recipe? existingRecipe = _unitOfWork.RecipeRepository.CheckIfRecipeExistsWithIngredients(ingredients);
             if (existingRecipe != null)
                 return (existingRecipe, true);
 

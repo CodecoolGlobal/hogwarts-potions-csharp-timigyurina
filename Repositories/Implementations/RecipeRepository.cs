@@ -11,14 +11,13 @@ namespace HogwartsPotions.Repositories.Implementations
         {
         }
 
-        public async Task<Recipe?> CheckIfRecipeExistsWithIngredients(IEnumerable<Ingredient> ingredients)
+        public Recipe? CheckIfRecipeExistsWithIngredients(IEnumerable<Ingredient> ingredients)
         {
             IEnumerable<Recipe> detailedRecipesWithIngredientCount = _context.Recipes.Where(r => r.Consistencies.Count() == ingredients.Count())
                 .Include(r => r.Consistencies)
                 .AsNoTracking();
 
             IEnumerable<int> idsOfIngredientsToCheck = ingredients.Select(i => i.Id);
-            //IEnumerable<Recipe> detailedRecipes = _context.Recipes.Include(r => r.Consistencies).AsNoTracking();
 
             foreach (Recipe recipe in detailedRecipesWithIngredientCount)
             {
@@ -28,8 +27,7 @@ namespace HogwartsPotions.Repositories.Implementations
 
                 if (areAllIngredientsInRecipe)
                 {
-                    Recipe? r = await GetAsync(recipe.Id);
-                    return r;
+                    return recipe;
                 }
 
             }
@@ -53,13 +51,13 @@ namespace HogwartsPotions.Repositories.Implementations
             {
                 return null;
             }
-            Recipe? recipe  = await GetWithDetails(recipeId);
+            Recipe? recipe = await GetWithDetails(recipeId);
             if (recipe == null)
             {
                 return null;
             }
 
-            HashSet<Ingredient> ingredients= new HashSet<Ingredient>();
+            HashSet<Ingredient> ingredients = new HashSet<Ingredient>();
             foreach (Consistency consistency in recipe.Consistencies)
             {
                 ingredients.Add(consistency.Ingredient);
@@ -68,6 +66,7 @@ namespace HogwartsPotions.Repositories.Implementations
             return ingredients;
         }
 
+
         public async Task<Recipe?> GetWithDetails(int? id)
         {
             return await _context.Recipes
@@ -75,6 +74,32 @@ namespace HogwartsPotions.Repositories.Implementations
                     .ThenInclude(c => c.Ingredient)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public IEnumerable<Recipe> GetRecipesWithIngredients(IEnumerable<Ingredient> ingredients)
+        {
+            HashSet<Recipe> recipesWithIngredients = new HashSet<Recipe>();
+
+            IEnumerable<int> idsOfIngredientsToCheck = ingredients.Select(i => i.Id);
+
+            IEnumerable<Recipe> detailedRecipesWithIngredientCount = _dbSet.Where(r => r.Consistencies.Count() >= ingredients.Count())
+                .Include(r => r.Consistencies)
+                    .ThenInclude(c => c.Ingredient)
+                .AsNoTracking();
+
+            foreach (Recipe recipe in detailedRecipesWithIngredientCount)
+            {
+                IEnumerable<int> ingredientIdsInRecipe = recipe.Consistencies.Select(c => c.IngredientId);
+
+                bool containsAllIngredients = idsOfIngredientsToCheck.Intersect(ingredientIdsInRecipe).Count() >= idsOfIngredientsToCheck.Count();
+
+                if (containsAllIngredients)
+                {
+                    recipesWithIngredients.Add(recipe);
+                }
+
+            }
+            return recipesWithIngredients;
         }
     }
 }
