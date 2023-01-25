@@ -14,15 +14,15 @@ namespace HogwartsPotions.Repositories.Implementations
 
         }
 
-        public async Task<Potion?> CreateNewAsync(Student creator, BrewingStatus brewingStatus, Recipe recipe)
+        public async Task<Potion?> CreateNewAsync(Student creator, BrewingStatus brewingStatus, Recipe? recipe)
         {
 
             Potion potionToBeAdded = new Potion()
             {
                 StudentId = creator.Id,
-                RecipeId = recipe.Id,
+                RecipeId = recipe == null ? null : recipe.Id,
                 BrewingStatus = brewingStatus,
-                Name = $"{creator.Name}'s {brewingStatus} #{creator.Id}{recipe.Id}"
+                Name = $"Student#{creator.Id}'s {brewingStatus} of Recipe {(recipe == null ? "none" : recipe.Name)}"
             };
 
             return await AddAsync(potionToBeAdded);
@@ -59,7 +59,7 @@ namespace HogwartsPotions.Repositories.Implementations
             {
                 StudentId = creator.Id,
                 BrewingStatus = BrewingStatus.Brew,
-                Name = $"{creator.Name}'s freshly started {BrewingStatus.Brew}",
+                Name = $"Student#{creator.Id}'s freshly started {BrewingStatus.Brew}",
                 RecipeId = null,
             };
 
@@ -69,7 +69,7 @@ namespace HogwartsPotions.Repositories.Implementations
         public async Task<Potion?> UpdateBasedOnAddedIngredient(int potionId, BrewingStatus brewingStatus, Recipe? recipe)
         {
             Potion?potionToBeUpdated = await _dbSet
-                .Include(p => p.PotionIngredients)
+                //.Include(p => p.PotionIngredients)
                 .FirstOrDefaultAsync(p => p.Id == potionId);
 
             if (potionToBeUpdated == null)
@@ -82,7 +82,7 @@ namespace HogwartsPotions.Repositories.Implementations
                 {
                     potionToBeUpdated.RecipeId = recipe.Id;
                     potionToBeUpdated.Recipe = recipe;
-                    potionToBeUpdated.Name = $"Student#{potionToBeUpdated.StudentId}'s {brewingStatus} #{potionToBeUpdated.StudentId}{recipe.Id}";
+                    potionToBeUpdated.Name = $"Student#{potionToBeUpdated.StudentId}'s {brewingStatus} of Recipe {recipe.Name}";
                 }
                 await UpdateAsync(potionToBeUpdated);
             }

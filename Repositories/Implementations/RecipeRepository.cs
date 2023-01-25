@@ -27,6 +27,7 @@ namespace HogwartsPotions.Repositories.Implementations
 
                 if (areAllIngredientsInRecipe)
                 {
+
                     return recipe;
                 }
 
@@ -38,7 +39,7 @@ namespace HogwartsPotions.Repositories.Implementations
         {
             Recipe recipeToAdd = new Recipe()
             {
-                Name = $"{creator.Name}'s recipe",
+                Name = $"Student#{creator.Id}'s recipe",
                 StudentId = creator.Id
             };
 
