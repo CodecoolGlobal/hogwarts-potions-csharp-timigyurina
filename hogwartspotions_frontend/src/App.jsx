@@ -1,10 +1,10 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./Components/Navbar";
-import Home from "./Components/Home";
-import Potions from "./Components/Potions";
-import StartBrewing from "./Components/StartBrewing";
-import AddIngredient from "./Components/AddIngredient";
+import Navbar from "./Components/Navigation/Navbar";
+import Home from "./Components/Pages/Home";
+import Potions from "./Components/Pages/Potions";
+import StartBrewing from "./Components/Pages/StartBrewing";
+import AddIngredient from "./Components/Pages/AddIngredient";
 
 function App() {
   return (
