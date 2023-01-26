@@ -24,9 +24,9 @@ const StartBrewing = () => {
 
   const startPotion = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
+    
     try {
+      setIsLoading(true);
       const response = await fetch(
         `https://localhost:44390/api/potions/brew/${creator}`,
         {

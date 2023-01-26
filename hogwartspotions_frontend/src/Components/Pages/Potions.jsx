@@ -10,7 +10,9 @@ const Potions = () => {
 
   const fetchPotions = async () => {
     const url = "https://localhost:44390/api/potions";
+    
     try {
+      setIsLoading(true);
       const response = await fetch(url);
       const data = await response.json();
 
@@ -21,7 +23,9 @@ const Potions = () => {
         console.log(error);
       }
       setPotions(data);
+      setIsLoading(false);
       console.log(data);
+
     } catch (err) {
       setIsLoading(false);
       setError(err.message);

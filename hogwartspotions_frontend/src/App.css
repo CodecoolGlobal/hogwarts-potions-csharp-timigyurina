@@ -1,18 +1,28 @@
-.navbar{
-    display: flex;
-    justify-content: space-between;
+.navbar {
+  display: flex;
+  justify-content: space-between;
 }
+
 
 .start-potion-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
 
-    width: 70%;
-    padding: 1em;
+  width: 70%;
+  padding: 1em;
 }
 
-.start-potion-btn {
-    align-self: center;
-    width: 50%;
+.add-ingredient-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+
+
+  padding: 1em;
+}
+
+.form-btn {
+  align-self: center;
+  width: 50%;
 }
