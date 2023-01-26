@@ -218,6 +218,20 @@ namespace HogwartsPotions.Controllers
         }
 
 
+        // DELETE: api/Potions/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePotionById(int id)
+        {
+            Potion? potion = await _unitOfWork.PotionRepository.GetAsync(id);
+
+            if (potion == null)
+                return NotFound();
+
+            await _unitOfWork.PotionRepository.DeleteAsync(id);
+
+            return NoContent();
+        }
+
 
         private async Task<Recipe> CreateRecipeAndConsistencies(int creatorId, HashSet<Ingredient> ingredients)
         {
