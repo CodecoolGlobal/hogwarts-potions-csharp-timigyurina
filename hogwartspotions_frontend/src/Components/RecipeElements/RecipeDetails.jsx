@@ -22,19 +22,17 @@ const RecipeDetails = ({ recipe }) => {
           </div>
           <div>
             <h3>Ingredients in this Recipe:</h3>
-            {recipe.consistencies.map((r) => (
-              <li key={r.ingredient.id}>{r.ingredient.name}</li>
+            {recipe.consistencies.map((c) => (
+              <li key={c.recipeId + c.ingredientId}>{c.ingredient.name}</li>
             ))}
           </div>
           <div>
             <h3>Potions made of this Recipe:</h3>
             <p>Count: {recipe.potionsMadeOfRecipe.length}</p>
             {recipe.potionsMadeOfRecipe.map((p) => (
-              <>
-                <div key={p.id}>
-                  ~  {p.name} - {p.brewingStatus}
-                </div>
-              </>
+              <div key={p.id}>
+                ~ {p.name} - {p.brewingStatus}
+              </div>
             ))}
           </div>
         </CardContent>

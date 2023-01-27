@@ -4,9 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import RecipeDetails from "../RecipeElements/RecipeDetails";
 import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
+import RenameRecipeForm from "../FormElements/RenameRecipeForm";
+import Button from "@mui/material/Button";
 
 import "../../App.css";
-import RenameRecipeForm from "../FormElements/RenameRecipeForm";
 
 const RenameRecipe = () => {
   const recipeId = useParams().recipeId;
@@ -57,6 +58,21 @@ const RenameRecipe = () => {
     setSuccess(null);
   };
 
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const recipeWasRenamed = (responseData, errorMessage) => {
+    !errorMessage &&
+      setSuccess(
+        `You have successfully renamed the Recipe to ${responseData.name}`
+      );
+    errorMessage && setError(errorMessage);
+
+    setIsEditing(false);
+    fetchRecipe();
+  };
+
   return (
     <>
       {isLoading ? (
@@ -79,8 +95,19 @@ const RenameRecipe = () => {
         />
       ) : (
         <div className="rename-recipe-page">
-          {recipe && <RecipeDetails recipe={recipe} />}
-          {isEditing && <RenameRecipeForm />}
+          {recipe && (
+            <div>
+              <RecipeDetails recipe={recipe} />
+              <Button
+                onClick={toggleEdit}
+                className="form-btn"
+                variant="contained"
+              >
+                Edit Recipe
+              </Button>
+            </div>
+          )}
+          {isEditing && <RenameRecipeForm onUpdate={recipeWasRenamed} />}
         </div>
       )}
     </>

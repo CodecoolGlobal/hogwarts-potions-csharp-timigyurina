@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
@@ -16,11 +15,6 @@ const StartBrewing = () => {
   const [success, setSuccess] = useState();
 
   const navigate = useNavigate();
-  const minPotionNameLength = 2;
-
-  const isMinLength = (text, count) => {
-    return text.trim().length >= count;
-  };
 
   const startPotion = async (e) => {
     e.preventDefault();
@@ -92,19 +86,6 @@ const StartBrewing = () => {
         <MessageModal message={success} onClose={closeModal} onGoTo={clearSuccess} buttonText="Go to list of Potions"/>
       ) : (
         <form className="start-potion-form" onSubmit={startPotion}>
-          {/* <TextField
-            value={potionName}
-            onChange={(e) => setPotionName(e.target.value)}
-            className="potion-name"
-            label="Potion's name"
-            placeholder="Enter the name of your new Potion"
-            error={!isMinLength(potionName, minPotionNameLength)}
-            helperText={
-              !isMinLength(potionName, minPotionNameLength) &&
-              `Your Potion' name should be at least ${minPotionNameLength} characters long`
-            }
-            variant="standard"
-          /> */}
 
           <Button
             type="submit"
