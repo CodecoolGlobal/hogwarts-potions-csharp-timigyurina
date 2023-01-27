@@ -77,14 +77,18 @@ const AddIngredient = () => {
     fetchIngredients();
   }, []);
 
-  const clearError = () => {
-    setError(null);
-  };
 
   const clearSuccess = () => {
     setSuccess(null);
-    //navigate("/recipes", { replace: true });    //GO TO RECIPES PAGE FOR NAMING IT
+    console.log(potion.recipe);
+    navigate(`/recipes/${potion.recipe.id}/details`, { replace: true });    //GO TO RECIPES PAGE FOR NAMING IT
   };
+  
+  const closeModal = () => {
+    setError(null);
+    setSuccess(null);
+  };
+  
 
   const ingredientWasSubmitted = (ingredient, responseData, errorMessage) => {
     !errorMessage && setAddedIngredient(ingredient);
@@ -108,13 +112,9 @@ const AddIngredient = () => {
           <LoadingSpinner asOverlay />
         </div>
       ) : error ? (
-        <MessageModal message={error} onClear={clearError} itIsAnError />
+        <MessageModal message={error} onClose={closeModal} onGoTo={clearSuccess} itIsAnError />
       ) : success ? (
-        <MessageModal
-          message={success}
-          onClear={clearSuccess}
-          buttonText="Coooool"
-        />
+        <MessageModal message={success} onClose={closeModal} onGoTo={clearSuccess} buttonText="Go to the Recipe"/>
       ) : (
         <div className="add-ingredient-page">
           {potion && <PotionDetails potion={potion} />}

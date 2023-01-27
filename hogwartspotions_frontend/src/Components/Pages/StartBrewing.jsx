@@ -65,10 +65,11 @@ const StartBrewing = () => {
     }
   };
 
-  const clearError = () => {
+  const closeModal = () => {
     setError(null);
+    setSuccess(null);
   };
-
+  
   const clearSuccess = () => {
     setSuccess(null);
     navigate("/potions", { replace: true });
@@ -86,9 +87,9 @@ const StartBrewing = () => {
           <LoadingSpinner asOverlay />
         </div>
       ) : error ? (
-        <MessageModal message={error} onClear={clearError} itIsAnError />
+        <MessageModal message={error} onClose={closeModal} itIsAnError />
       ) : success ? (
-        <MessageModal message={success} onClear={clearSuccess} buttonText="Go to list of Potions"/>
+        <MessageModal message={success} onClose={closeModal} onGoTo={clearSuccess} buttonText="Go to list of Potions"/>
       ) : (
         <form className="start-potion-form" onSubmit={startPotion}>
           {/* <TextField

@@ -23,7 +23,8 @@ const style = {
 
 const MessageModal = ({
   message,
-  onClear,
+  onClose,
+  onGoTo,
   moreMessage,
   buttonText = "Close",
   itIsAnError,
@@ -31,7 +32,12 @@ const MessageModal = ({
   const [open, setOpen] = useState(true);
 
   const handleClose = () => {
-    onClear();
+    onClose();
+    setOpen(false);
+  };
+
+  const handleGoTo = () => {
+    onGoTo();
     setOpen(false);
   };
 
@@ -51,13 +57,20 @@ const MessageModal = ({
             {moreMessage}
           </Typography>
         )}
-        <Button
-          onClick={handleClose}
-          variant="outlined"
-          color={itIsAnError ? "error" : "primary"}
-        >
-          {buttonText}
-        </Button>
+        <div className="modal-buttons-container">
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            color={itIsAnError ? "error" : "primary"}
+          >
+            Close
+          </Button>
+          {!itIsAnError && (
+            <Button onClick={handleGoTo} variant="outlined" color={"primary"}>
+              {buttonText}
+            </Button>
+          )}
+        </div>
       </ModalBase>
     </div>
   );
