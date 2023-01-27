@@ -34,24 +34,22 @@ const AddIngredientForm = ({ onAdd, ingredients }) => {
         }
       );
       const responseData = await response.json();
-      if (!response.ok) {
-        setIsLoading(false);
-        console.log(responseData);
-        onAdd(chosenIngredient, false, "error happened");
-      }
-      setIsLoading(false);
       console.log(responseData);
+      setIsLoading(false);
 
-      onAdd(chosenIngredient, responseData.recipe, false);
+      if (!response.ok) {
+        const error = responseData.message;
+        console.log(error);
+        onAdd(chosenIngredient, false, error); // In AddINgredient the params are: ingredient, responseData, errorMessage
+        return error;
+      }
+
+      onAdd(chosenIngredient, responseData, false); // if the response is ok, the rsponseData will be the Potion
     } catch (err) {
       setIsLoading(false);
       console.log(err);
 
-      onAdd(
-        chosenIngredient,
-        false,
-        "Potion already contains this ingredient, try adding another one"
-      );
+      onAdd(chosenIngredient, false, err.message);
     }
   };
 

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import PotionDetails from "../PotionElements/PotionDetails";
 import AddIngredientForm from "../FormElements/AddIngredientForm";
-import IngredientWasAdded from "../FormElements/IngredientWasAdded"
+import IngredientWasAdded from "../FormElements/IngredientWasAdded";
 import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
 
@@ -28,17 +28,18 @@ const AddIngredient = () => {
 
     try {
       const response = await fetch(url);
-      const data = await response.json();
+      const responseData = await response.json();
+      console.log(responseData);
+      setIsLoading(false);
 
       if (!response.ok) {
         const error = response.message;
-        setIsLoading(false);
         setError(error);
         console.log(error);
+        return;
       }
-      setPotion(data);
-      setIsLoading(false);
-      console.log(data);
+
+      setPotion(responseData);
     } catch (err) {
       setIsLoading(false);
       setError(err.message);
@@ -52,17 +53,18 @@ const AddIngredient = () => {
     setIsLoading(true);
     try {
       const response = await fetch(url);
-      const data = await response.json();
+      const responseData = await response.json();
+      console.log(responseData);
+      setIsLoading(false);
 
       if (!response.ok) {
-        const error = response.message;
-        setIsLoading(false);
+        const error = responseData.message;
         setError(error);
         console.log(error);
+        return;
       }
-      setIngredients(data);
-      setIsLoading(false);
-      console.log(data);
+
+      setIngredients(responseData);
     } catch (err) {
       setIsLoading(false);
       setError(err.message);
@@ -84,10 +86,12 @@ const AddIngredient = () => {
     //navigate("/recipes", { replace: true });    //GO TO RECIPES PAGE FOR NAMING IT
   };
 
-  const ingredientWasSubmitted = (ingredient, isNewRecipe, errorMessage) => {
+  const ingredientWasSubmitted = (ingredient, responseData, errorMessage) => {
     !errorMessage && setAddedIngredient(ingredient);
-    isNewRecipe &&
+    responseData.brewingStatus === "Discovery" &&
       setSuccess("Congratulations! You have invented a new Recipe!");
+    responseData.brewingStatus === "Replica" &&
+      setSuccess(`You have successfully brewed the Recipe ${responseData.recipe.name}`);
     errorMessage && setError(errorMessage);
 
     fetchPotion();
@@ -128,7 +132,6 @@ const AddIngredient = () => {
     </>
   );
 };
-
 
 export default AddIngredient;
 
