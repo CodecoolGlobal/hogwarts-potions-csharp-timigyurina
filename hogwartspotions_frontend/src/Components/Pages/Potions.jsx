@@ -51,7 +51,7 @@ const Potions = () => {
       ) : error ? (
         <MessageModal message={error} onClose={clearError} itIsAnError />
       ) : (
-        <PotionsTable potions={potions} />
+        <PotionsTable potions={potions} onDelete={fetchPotions}/>
       )}
     </>
   );
