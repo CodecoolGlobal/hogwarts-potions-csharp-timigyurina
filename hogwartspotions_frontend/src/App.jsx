@@ -6,7 +6,7 @@ import Potions from "./Components/Pages/Potions";
 import StartBrewing from "./Components/Pages/StartBrewing";
 import AddIngredient from "./Components/Pages/AddIngredient";
 import Recipes from "./Components/Pages/Recipes";
-import RecipeDetails from "./Components/Pages/RecipeDetails";
+import RenameRecipe from "./Components/Pages/RenameRecipe";
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
           <Route path="/potions/startbrewing" element={<StartBrewing />} />
           <Route path="/potions/:potionId/addingredient" element={<AddIngredient />} />
           <Route path="/recipes" element={<Recipes />} />
-          <Route path="/recipes/:recipeId/details" element={<RecipeDetails />} />
+          <Route path="/recipes/:recipeId/details" element={<RenameRecipe />} />
 
           <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate replace to="/" />} />
