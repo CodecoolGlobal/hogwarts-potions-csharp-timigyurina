@@ -14,18 +14,19 @@ const Potions = () => {
     try {
       setIsLoading(true);
       const response = await fetch(url);
-      const data = await response.json();
+      const responseData = await response.json();
+      console.log(responseData);
+      setIsLoading(false);
 
       if (!response.ok) {
         const error = response.message;
-        setIsLoading(false);
         setError(error);
         console.log(error);
+        return;
       }
-      setPotions(data);
-      setIsLoading(false);
-      console.log(data);
 
+      setPotions(responseData);
+      
     } catch (err) {
       setIsLoading(false);
       setError(err.message);

@@ -40,27 +40,28 @@ const StartBrewing = () => {
         }
       );
       const responseData = await response.json();
+      console.log(responseData);
+
+      clearInputs();
+      setIsLoading(false);
+
       if (!response.ok) {
-        //means I will have an error and it has a message property
+        //means I will have an error and it has an message property (I set this on the backend)
         const error = responseData.message;
-        clearInputs();
         setError(error);
-        setIsLoading(false);
         console.log(error);
         return error;
       }
-      clearInputs();
-      setSuccess("You have successfully started a new Potion!");
-      setIsLoading(false);
-      console.log(responseData);
-      setCreatedPotion(responseData);
 
+      setSuccess("You have successfully started a new Potion!");
+      setCreatedPotion(responseData);
       return responseData;
+
     } catch (err) {
       clearInputs();
       setIsLoading(false);
-      console.log(err); 
       setError(err.message);
+      console.log(err); 
     }
   };
 
@@ -90,7 +91,7 @@ const StartBrewing = () => {
         <MessageModal message={success} onClear={clearSuccess} buttonText="Go to list of Potions"/>
       ) : (
         <form className="start-potion-form" onSubmit={startPotion}>
-          <TextField
+          {/* <TextField
             value={potionName}
             onChange={(e) => setPotionName(e.target.value)}
             className="potion-name"
@@ -102,12 +103,12 @@ const StartBrewing = () => {
               `Your Potion' name should be at least ${minPotionNameLength} characters long`
             }
             variant="standard"
-          />
+          /> */}
 
           <Button
             type="submit"
             className="start-potion-btn"
-            disabled={!isMinLength(potionName, minPotionNameLength)}
+            // disabled={!isMinLength(potionName, minPotionNameLength)}
             variant="contained"
           >
             Start new Potion!
