@@ -22,7 +22,7 @@ namespace HogwartsPotions.Repositories.Implementations
                 StudentId = creator.Id,
                 RecipeId = recipe == null ? null : recipe.Id,
                 BrewingStatus = brewingStatus,
-                Name = $"Student#{creator.Id}'s {brewingStatus} of Recipe {(recipe == null ? "none" : recipe.Name)}"
+                Name = $"Student#{creator.Id}'s {brewingStatus} {(recipe == null ? "" : $"of Recipe#{recipe.Id}")}"
             };
 
             return await AddAsync(potionToBeAdded);
@@ -82,7 +82,7 @@ namespace HogwartsPotions.Repositories.Implementations
                 {
                     potionToBeUpdated.RecipeId = recipe.Id;
                     potionToBeUpdated.Recipe = recipe;
-                    potionToBeUpdated.Name = $"Student#{potionToBeUpdated.StudentId}'s {brewingStatus} of Recipe {recipe.Name}";
+                    potionToBeUpdated.Name = $"Student#{potionToBeUpdated.StudentId}'s {brewingStatus} of Recipe#{recipe.Id}";
                 }
                 await UpdateAsync(potionToBeUpdated);
             }

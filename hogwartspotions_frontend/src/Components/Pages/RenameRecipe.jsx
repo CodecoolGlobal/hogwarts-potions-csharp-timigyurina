@@ -96,16 +96,18 @@ const RenameRecipe = () => {
       ) : (
         <div className="rename-recipe-page">
           {recipe && (
-            <div>
+            <>
               <RecipeDetails recipe={recipe} />
               <Button
                 onClick={toggleEdit}
                 className="form-btn"
                 variant="contained"
+                color="warning"
+                sx={{margin: "1em"}}
               >
                 Edit Recipe
               </Button>
-            </div>
+            </>
           )}
           {isEditing && <RenameRecipeForm onUpdate={recipeWasRenamed} />}
         </div>

@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 const RecipeDetails = ({ recipe }) => {
   return (
     <Box sx={{ minWidth: 275 }}>
-      <Card variant="outlined">
+      <Card variant="outlined" className="recipe-details-card">
         <CardContent>
           <Typography variant="h5" component="div">
             {recipe.name}

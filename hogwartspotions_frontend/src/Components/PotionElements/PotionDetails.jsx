@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 const PotionDetails = ({ potion }) => {
   return (
     <Box sx={{ minWidth: 275 }}>
-      <Card variant="outlined">
+      <Card variant="outlined" className="potion-details-card">
         <CardContent>
           <Typography variant="h5" component="div">
             {potion.name}

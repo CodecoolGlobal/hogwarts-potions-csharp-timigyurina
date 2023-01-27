@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import LoadingSpinner from "../UIElements/LoadingSpinner";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
 import "../../App.css";
@@ -44,11 +43,11 @@ const RenameRecipeForm = ({ onUpdate }) => {
       if (!response.ok) {
         const error = responseData.message;
         console.log(error);
-        onUpdate(false, error); // In AddINgredient the params are: ingredient, responseData, errorMessage
+        onUpdate(false, error); 
         return error;
       }
 
-      onUpdate(responseData, false); // if the response is ok, the rsponseData will be the Potion
+      onUpdate(responseData, false);
     } catch (err) {
       setIsLoading(false);
       console.log(err);
@@ -65,10 +64,10 @@ const RenameRecipeForm = ({ onUpdate }) => {
         </div>
       ) : (
         <>
+          <form onSubmit={renameRecipe} className="rename-recipe-form ">
           <Typography variant="h5" component="div">
             Rename the Recipe
           </Typography>
-          <form onSubmit={renameRecipe}>
             <FormControl fullWidth>
               <TextField
                 value={newName}
@@ -89,6 +88,8 @@ const RenameRecipeForm = ({ onUpdate }) => {
                 className="form-btn"
                 disabled={!isMinLength(newName, minRecipeNameLength)}
                 variant="contained"
+                color="success"
+                sx={{margin: "1em"}}
               >
                 Rename Recipe
               </Button>

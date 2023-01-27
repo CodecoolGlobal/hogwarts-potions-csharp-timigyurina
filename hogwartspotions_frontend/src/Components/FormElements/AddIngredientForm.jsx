@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -64,11 +64,11 @@ const AddIngredientForm = ({ onAdd, ingredients }) => {
           <LoadingSpinner asOverlay />
         </div>
       ) : (
-        <>
-          <Typography variant="h5" component="div">
+        <div className="add-ingredient-form">
+          <Typography variant="h5" component="div" >
             Add a new Ingredient
           </Typography>
-          <form onSubmit={addIngredient}>
+          <form onSubmit={addIngredient} className="add-ingredient-form">
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Ingredient</InputLabel>
               <Select
@@ -88,14 +88,16 @@ const AddIngredientForm = ({ onAdd, ingredients }) => {
               <Button
                 type="submit"
                 className="form-btn"
+                sx={{margin: "1em"}}
                 disabled={chosenIngredient === ""}
                 variant="contained"
+                color="success"
               >
                 Add Ingredient
               </Button>
             </FormControl>
           </form>
-        </>
+        </div>
       )}
     </>
   );

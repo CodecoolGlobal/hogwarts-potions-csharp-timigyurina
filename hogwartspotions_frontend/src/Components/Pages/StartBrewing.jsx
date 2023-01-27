@@ -1,8 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+
 import Button from "@mui/material/Button";
 import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
+import ScienceIcon from '@mui/icons-material/Science';
 import "../../App.css";
 
 const StartBrewing = () => {
@@ -92,8 +94,9 @@ const StartBrewing = () => {
             className="start-potion-btn"
             // disabled={!isMinLength(potionName, minPotionNameLength)}
             variant="contained"
+            color="warning"
           >
-            Start new Potion!
+            Start brewing <ScienceIcon />
           </Button>
         </form>
       )}

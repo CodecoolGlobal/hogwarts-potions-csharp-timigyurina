@@ -7,7 +7,7 @@ const IngredientWasAdded = ({ onAddAnother }) => {
     };
   
     return (
-      <div>
+      <div className="added-ingredient">
         <Typography variant="h5" component="div">
           Ingredient has been added successfully.
         </Typography>

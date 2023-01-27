@@ -49,7 +49,7 @@ const Potions = () => {
           <LoadingSpinner asOverlay />
         </div>
       ) : error ? (
-        <MessageModal message={error} onClear={clearError} itIsAnError />
+        <MessageModal message={error} onClose={clearError} itIsAnError />
       ) : (
         <PotionsTable potions={potions} />
       )}
