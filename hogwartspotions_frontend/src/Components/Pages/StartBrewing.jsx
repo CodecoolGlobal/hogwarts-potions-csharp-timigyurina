@@ -68,7 +68,7 @@ const StartBrewing = () => {
   
   const clearSuccess = () => {
     setSuccess(null);
-    navigate("/potions", { replace: true });
+    navigate(`/potions/${createdPotion.id}/addIngredient`, { replace: true });
   };
 
   const clearInputs = () => {
@@ -85,7 +85,7 @@ const StartBrewing = () => {
       ) : error ? (
         <MessageModal message={error} onClose={closeModal} itIsAnError />
       ) : success ? (
-        <MessageModal message={success} onClose={closeModal} onGoTo={clearSuccess} buttonText="Go to list of Potions"/>
+        <MessageModal message={success} onClose={closeModal} onGoTo={clearSuccess} buttonText="Go to this Potion"/>
       ) : (
         <form className="start-potion-form" onSubmit={startPotion}>
 

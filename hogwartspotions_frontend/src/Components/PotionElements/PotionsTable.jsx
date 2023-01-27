@@ -23,7 +23,7 @@ const PotionsTable = ({ potions }) => {
       <Box sx={{ marginY: 1 }}>
         <Grid container direction="row" alignItems="center" spacing={2}>
           <Grid item xs={12} md={9}>
-            <Button component={NavLink} variant="text" to="/startbrewing">
+            <Button component={NavLink} variant="text" to="/potions/startbrewing">
               Start a new Potion
             </Button>
           </Grid>
@@ -37,50 +37,54 @@ const PotionsTable = ({ potions }) => {
           </Grid>
         </Grid>
       </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Id</TableCell>
-              <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Brewing status</TableCell>
-              <TableCell align="center">RecipeId</TableCell>
-              <TableCell align="center">StudentId</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {potions.map((potion) => (
-              <TableRow
-                key={potion.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell align="center">{potion.id}</TableCell>
-                <TableCell align="center">{potion.name}</TableCell>
-                <TableCell align="center">{potion.brewingStatus}</TableCell>
-                <TableCell align="center">
-                  {potion.recipeId ? potion.recipeId : "none"}
-                </TableCell>
-                <TableCell align="center">{potion.studentId}</TableCell>
-                <TableCell align="center">
-                  <Button
-                    variant="text"
-                    component={NavLink}
-                    sx={{ width: "100%" }}
-                    to={`${potion.id}/addingredient`}
-                  >
-                    <EditIcon />
-                  </Button>
-                </TableCell>
-                <TableCell align="center">
-                  <Button variant="text">
-                    <DisabledByDefaultIcon />
-                  </Button>
-                </TableCell>
+      {potions.length === 0 ? (
+        "There are no Potions to show"
+      ) : (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Id</TableCell>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Brewing status</TableCell>
+                <TableCell align="center">RecipeId</TableCell>
+                <TableCell align="center">StudentId</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {potions.map((potion) => (
+                <TableRow
+                  key={potion.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell align="center">{potion.id}</TableCell>
+                  <TableCell align="center">{potion.name}</TableCell>
+                  <TableCell align="center">{potion.brewingStatus}</TableCell>
+                  <TableCell align="center">
+                    {potion.recipeId ? potion.recipeId : "none"}
+                  </TableCell>
+                  <TableCell align="center">{potion.studentId}</TableCell>
+                  <TableCell align="center">
+                    <Button
+                      variant="text"
+                      component={NavLink}
+                      sx={{ width: "100%" }}
+                      to={`${potion.id}/addingredient`}
+                    >
+                      <EditIcon />
+                    </Button>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button variant="text">
+                      <DisabledByDefaultIcon />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </div>
   );
 };

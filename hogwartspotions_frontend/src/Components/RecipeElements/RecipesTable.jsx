@@ -12,13 +12,16 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
 
-const RecipesTable = ({recipes}) => {
-    return (
-        <div className="Recipes">
+const RecipesTable = ({ recipes }) => {
+  return (
+    <div className="Recipes">
+      {recipes.length === 0 ? (
+        "There are no Recipes to show"
+      ) : (
+        <>
           <Box sx={{ textAlign: "center" }}>
             <h2>Recipes</h2>
           </Box>
-
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
@@ -57,8 +60,10 @@ const RecipesTable = ({recipes}) => {
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
-      );
-    };
+        </>
+      )}
+    </div>
+  );
+};
 
-export default RecipesTable
+export default RecipesTable;
