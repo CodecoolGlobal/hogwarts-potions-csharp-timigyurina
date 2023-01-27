@@ -5,8 +5,8 @@ using HogwartsPotions.Models.DTOs.PotionDTOs;
 using HogwartsPotions.Models.DTOs.RecipeDTOs;
 using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HogwartsPotions.Controllers
 {
@@ -40,9 +40,8 @@ namespace HogwartsPotions.Controllers
         {
             Student? student = await _unitOfWork.StudentRepository.GetAsync(studentId);
             if (student == null)
-            {
-                return BadRequest($"There is no student with the id of {studentId}");
-            }
+                return BadRequest(JsonConvert.SerializeObject(new { message = $"There is no student with the id of {studentId}" }));
+
             IEnumerable<Potion> potions = await _unitOfWork.PotionRepository.GetStudentPotions(studentId);
             IEnumerable<GetPotionDTO> potionDTOs = _mapper.Map<IEnumerable<GetPotionDTO>>(potions);
             return Ok(potionDTOs);
@@ -55,9 +54,7 @@ namespace HogwartsPotions.Controllers
             Potion? potion = await _unitOfWork.PotionRepository.GetAsync(id);
 
             if (potion == null)
-            {
-                return NotFound("Potion was not found");
-            }
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No Potion with the id of {id} was found" }));
 
             GetPotionDTO potionDTO = _mapper.Map<GetPotionDTO>(potion);
 
@@ -71,7 +68,7 @@ namespace HogwartsPotions.Controllers
             Potion? potion = await _unitOfWork.PotionRepository.GetPotionWithDetails(id);
 
             if (potion == null)
-                return NotFound("Potion was not found");
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No Potion with the id of {id} was found" }));
 
             // could also use IngredientRepository.GetIngredientsOfPotion method (but with searching for the Potion with the GetPotionWithDetails method, the Ingredients will also be included! - thanks to PotionIngredients joint table:))
             GetPotionDTOWithRecipeAndPotionIngredientDetails potionDTO = _mapper.Map<GetPotionDTOWithRecipeAndPotionIngredientDetails>(potion);
@@ -85,7 +82,7 @@ namespace HogwartsPotions.Controllers
         {
             Student? creator = await _unitOfWork.StudentRepository.GetAsync(addPotionDTO.StudentId);
             if (creator == null)
-                throw new Exception($"Student with the id of {addPotionDTO.StudentId} does not exist");
+                return NotFound(JsonConvert.SerializeObject(new { message = $"Student with the id of {addPotionDTO.StudentId} does not exist" }));
 
             HashSet<Ingredient> ingredientsOfPotion = _mapper.Map<HashSet<Ingredient>>(addPotionDTO.Ingredients);
             BrewingStatus statusOfPotionToBeCreated = BrewingStatus.Brew;
@@ -109,13 +106,13 @@ namespace HogwartsPotions.Controllers
             Potion? createdPotion = await _unitOfWork.PotionRepository.CreateNewAsync(creator, statusOfPotionToBeCreated, recipeOfPotionToBeCreated);
 
             if (createdPotion == null)
-                return BadRequest($"There were some errors during the creation of the Potion in {nameof(AddPotion)}, Potion could not be created");
+                return BadRequest(JsonConvert.SerializeObject(new { message = $"There were some errors during the creation of the Potion in {nameof(AddPotion)}, Potion could not be created" }));
 
             // only add new PotionIngredients if Potion has been successfully created
             bool successfullyCreatedPotionIngredients = await _unitOfWork.PotionIngredientRepository.AddMoreForNewPotion(createdPotion.Id, ingredientsOfPotion);
 
             if (!successfullyCreatedPotionIngredients)
-                return BadRequest($"Errors during the creation of the PotionIngredients for the Potion in {nameof(AddPotion)}");
+                return BadRequest(JsonConvert.SerializeObject(new { message = $"Errors during the creation of the PotionIngredients for the Potion in {nameof(AddPotion)}" }));
 
             GetPotionDTO createdPotionDTO = _mapper.Map<GetPotionDTO>(createdPotion);
 
@@ -128,15 +125,11 @@ namespace HogwartsPotions.Controllers
         {
             Student? creator = await _unitOfWork.StudentRepository.GetAsync(studentId);
             if (creator == null)
-            {
-                return BadRequest($"Student with the id of {studentId} does not exist");
-            }
+                return BadRequest(JsonConvert.SerializeObject(new { message = $"Student with the id of {studentId} does not exist" }));
 
             Potion? startedPotion = await _unitOfWork.PotionRepository.StartBrewing(creator);
             if (startedPotion == null)
-            {
-                return BadRequest($"There were some errors during the brew of the Potion in {nameof(StartBrewing)}, Potion could not be created");
-            }
+                return BadRequest(JsonConvert.SerializeObject(new { message = $"There were some errors during the brew of the Potion in {nameof(StartBrewing)}, Potion could not be created" }));
 
             GetPotionDTOWithDetails startedPotionDTO = _mapper.Map<GetPotionDTOWithDetails>(startedPotion);
 
@@ -149,19 +142,19 @@ namespace HogwartsPotions.Controllers
         {
             Potion? potionToBeUpdated = await _unitOfWork.PotionRepository.GetAsync(potionId);
             if (potionToBeUpdated == null)
-                return NotFound($"No potion with the id of {potionId} was found");
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No potion with the id of {potionId} was found" }));
 
             Ingredient? ingredientToBeAdded = _unitOfWork.IngredientRepository.GetIngredientByName(ingredientDTO.Name);
             if (ingredientToBeAdded == null)
             {
                 ingredientToBeAdded = await _unitOfWork.IngredientRepository.AddAsync(new Ingredient() { Name = ingredientDTO.Name.ToLower() });
                 if (ingredientToBeAdded == null)
-                    return BadRequest($"Ingredient could not be created.");
+                    return BadRequest(JsonConvert.SerializeObject(new { message = $"Ingredient could not be created." }));
             }
 
             bool alreadyContainsIngredient = _unitOfWork.PotionIngredientRepository.CheckIfContains(potionId, ingredientToBeAdded.Id);
             if (alreadyContainsIngredient)
-                return BadRequest($"Potion already contains this Ingredient");
+                return BadRequest(JsonConvert.SerializeObject(new { message = $"Potion already contains this Ingredient" }));
 
             PotionIngredient? addedPotionIngredient = await _unitOfWork.PotionIngredientRepository.AddAsync(
                 new PotionIngredient() { IngredientId = ingredientToBeAdded.Id, PotionId = potionToBeUpdated.Id }
@@ -191,7 +184,7 @@ namespace HogwartsPotions.Controllers
 
             Potion? updatedPotion = await _unitOfWork.PotionRepository.UpdateBasedOnAddedIngredient(potionId, statusAfterAddingIngredient, recipeAfterAddingIngredient);
             if (updatedPotion == null)
-                return BadRequest($"There were some errors during the update of the Potion in {nameof(AddPotion)}, Potion could not be updated");
+                return BadRequest(JsonConvert.SerializeObject(new { message = ($"There were some errors during the update of the Potion in {nameof(AddPotion)}, Potion could not be updated") }));
 
             Potion? updatedPotionWithMoreDetails = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId); // just to be able to view everything in the response
             GetPotionDTOWithRecipeAndPotionIngredientDetails updatedPotionDTO = _mapper.Map<GetPotionDTOWithRecipeAndPotionIngredientDetails>(updatedPotionWithMoreDetails);
@@ -206,7 +199,7 @@ namespace HogwartsPotions.Controllers
         {
             Potion? potion = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId);
             if (potion == null)
-                return NotFound($"No potion with the id of {potionId} was found");
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No potion with the id of {potionId} was found" }));
             //if (potion.PotionIngredients.Count > 4)
             //    return BadRequest("The Potion already contains at least 5 Ingredients");
 
@@ -225,7 +218,7 @@ namespace HogwartsPotions.Controllers
             Potion? potion = await _unitOfWork.PotionRepository.GetAsync(id);
 
             if (potion == null)
-                return NotFound();
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No Potion exists with the id of {id}" }));
 
             await _unitOfWork.PotionRepository.DeleteAsync(id);
 
