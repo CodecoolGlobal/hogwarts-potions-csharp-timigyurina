@@ -28,6 +28,7 @@ namespace HogwartsPotions.Configurations
 
             CreateMap<Recipe, RecipeDTOWithId>().ReverseMap();
             CreateMap<Recipe, GetRecipeDTOWithDetails>().ReverseMap();
+            CreateMap<Recipe, UpdateRecipeDTO>().ReverseMap();
 
             CreateMap<PotionIngredient, PotionIngredientDTO>().ReverseMap();
             CreateMap<Consistency, ConsistencyDTO>().ReverseMap();

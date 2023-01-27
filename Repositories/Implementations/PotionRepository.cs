@@ -38,14 +38,14 @@ namespace HogwartsPotions.Repositories.Implementations
             return _context.Potions
                 .Include(p => p.Student)
                 .Include(p => p.Recipe)
-                    //.ThenInclude(r => r.Consistencies)
-                    //    .ThenInclude(c => c.Ingredient)
+                //.ThenInclude(r => r.Consistencies)
+                //    .ThenInclude(c => c.Ingredient)
                 .Include(p => p.PotionIngredients)
                     .ThenInclude(pi => pi.Ingredient)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(q => q.Id == id);
         }
-        
+
         public Task<Potion?> GetPotionWithPotionIngredients(int id)
         {
             return _context.Potions
@@ -68,7 +68,7 @@ namespace HogwartsPotions.Repositories.Implementations
 
         public async Task<Potion?> UpdateBasedOnAddedIngredient(int potionId, BrewingStatus brewingStatus, Recipe? recipe)
         {
-            Potion?potionToBeUpdated = await _dbSet
+            Potion? potionToBeUpdated = await _dbSet
                 //.Include(p => p.PotionIngredients)
                 .FirstOrDefaultAsync(p => p.Id == potionId);
 
@@ -88,6 +88,12 @@ namespace HogwartsPotions.Repositories.Implementations
             }
             return potionToBeUpdated;
 
+        }
+
+        public async Task<HashSet<Potion>> GetPotionsOfRecipe(int recipeId)
+        {
+            IEnumerable<Potion> potionsOfRecipe = await GetAllAsync(r => r.RecipeId == recipeId);
+            return potionsOfRecipe.ToHashSet();
         }
     }
 }

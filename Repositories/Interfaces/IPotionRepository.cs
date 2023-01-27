@@ -11,5 +11,6 @@ namespace HogwartsPotions.Repositories.Interfaces
         Task<Potion?> GetPotionWithPotionIngredients(int id);
         Task<Potion?> StartBrewing(Student creator);
         Task<Potion?> UpdateBasedOnAddedIngredient(int potionId, BrewingStatus brewingStatus, Recipe? recipe);
+        Task<HashSet<Potion>> GetPotionsOfRecipe(int recipeId);
     }
 }
