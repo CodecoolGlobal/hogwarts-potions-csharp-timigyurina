@@ -226,11 +226,11 @@ namespace HogwartsPotions.Controllers
             Potion? potion = await _unitOfWork.PotionRepository.GetAsync(id);
 
             if (potion == null)
-                return NotFound(JsonConvert.SerializeObject(new { message = $"No Potion exists with the id of {id}" }));
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No Potion with the id of {id} exists" }));
 
             await _unitOfWork.PotionRepository.DeleteAsync(id);
 
-            return NoContent();
+            return Ok(JsonConvert.SerializeObject(new { message = $"Potion {id} was successfully deleted" }));
         }
 
 
