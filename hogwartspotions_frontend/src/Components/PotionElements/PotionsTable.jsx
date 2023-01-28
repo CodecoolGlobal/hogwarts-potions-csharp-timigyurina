@@ -14,39 +14,12 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
 import TextField from "@mui/material/TextField";
-import Card from '@mui/material/Card';
+import Typography from "@mui/material/Typography";
+import PotionDelete from "./PotionDelete";
 
 const PotionsTable = ({ potions, onDelete }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [potionToDelete, setPotionToDelete] = useState(null);
-
-  const deletePotion = async (id) => {
-    console.log(id);
-    const url = await fetch(`https://localhost:44390/api/potions/${id}`, {
-      method: "DELETE",
-    });
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(url);
-
-      setIsLoading(false);
-      onDelete();
-
-      if (!response.ok) {
-        const error = response.message;
-        setError(error);
-        console.log(error);
-        return;
-      }
-    } catch (err) {
-      setIsLoading(false);
-      setError(err.message);
-      console.log(err);
-    }
-  };
 
   const openDeleteDialog = (potion) => {
     setDeleteInProgress(true);
@@ -63,10 +36,17 @@ const PotionsTable = ({ potions, onDelete }) => {
   return (
     <div className="potions">
       <Box sx={{ textAlign: "center" }}>
-        <h2>Potions</h2>
+        <Typography variant="h4" component="h2" marginY={2}>
+          Potions
+        </Typography>
       </Box>
-      <Box sx={{ marginY: 1 }}>
-        <Grid container direction="row" alignItems="center" spacing={2}>
+      <Box sx={{ marginBottom: 2, marginX: 2, width: "95%" }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-around"
+          spacing={2}
+        >
           <Grid item xs={12} md={9}>
             <Button
               component={NavLink}
@@ -86,24 +66,15 @@ const PotionsTable = ({ potions, onDelete }) => {
           </Grid>
         </Grid>
       </Box>
+
       {deleteInProgress && (
-        <Card className="delete-potion-dialog" variant="outlined">
-          Are you sure you want to delete {potionToDelete.name} (id:{" "}
-          {potionToDelete.id})?
-          <div className="delete-potion-dialog-buttons">
-            <Button onClick={cancelDelete} variant="outlined" color="primary">
-              Cancel
-            </Button>
-            <Button
-              onClick={() => deletePotion(potionToDelete.id)}
-              variant="contained"
-              color="error"
-            >
-              Delete
-            </Button>
-          </div>
-        </Card>
+        <PotionDelete
+          potionToDelete={potionToDelete}
+          onDelete={onDelete}
+          onCancelDelete={cancelDelete}
+        />
       )}
+
       {potions.length === 0 ? (
         "There are no Potions to show"
       ) : (
@@ -136,7 +107,7 @@ const PotionsTable = ({ potions, onDelete }) => {
                       variant="text"
                       component={NavLink}
                       sx={{ width: "100%" }}
-                      to={`${potion.id}/addingredient`}
+                      to={`/potions/${potion.id}/addingredient`}
                     >
                       <EditIcon />
                     </Button>
