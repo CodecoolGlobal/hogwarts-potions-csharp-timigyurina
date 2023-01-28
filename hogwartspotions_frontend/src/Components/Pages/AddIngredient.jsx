@@ -8,6 +8,7 @@ import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
 
 import "../../App.css";
+import SuccessMessage from "../Shared/SuccessMessage";
 
 const AddIngredient = () => {
   const potionId = useParams().potionId;
@@ -113,7 +114,7 @@ const AddIngredient = () => {
     errorMessage && setError(errorMessage);
 
     responseData.brewingStatus === "Discovery" &&
-      setSuccess("Congratulations! You have invented a new Recipe!");
+      setSuccess(<SuccessMessage />);
 
     responseData.brewingStatus === "Replica" &&
       setSuccess(`You have successfully brewed the Recipe ${responseData.recipe.name}. ${formatPreviouslyBrewnCount(responseData.recipe.potionsMadeOfRecipe.length)}`);
