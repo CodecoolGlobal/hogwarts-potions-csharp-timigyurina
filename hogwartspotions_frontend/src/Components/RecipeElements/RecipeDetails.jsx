@@ -7,33 +7,50 @@ const RecipeDetails = ({ recipe }) => {
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined" className="recipe-details-card">
-        <CardContent>
-          <Typography variant="h5" component="div">
-            {recipe.name}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {recipe.brewingStatus}
-          </Typography>
+        <CardContent sx={{ display: "flex", flexDirection: "column", gap: "2em" }}>
           <div>
-            <h3>Creator's details:</h3>
-            <p>Name: {recipe.student.name}</p>
-            <p>House: {recipe.student.houseType}</p>
-            <p>Pet: {recipe.student.petType}</p>
+            <Typography variant="h5" component="div">
+              {recipe.name}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {recipe.brewingStatus}
+            </Typography>
           </div>
           <div>
-            <h3>Ingredients in this Recipe:</h3>
-            {recipe.consistencies.map((c) => (
-              <li key={c.recipeId + c.ingredientId}>{c.ingredient.name}</li>
-            ))}
+            <Typography variant="h6" component="h6">
+              Creator's details
+            </Typography>
+            <Typography variant="body">Name: {recipe.student.name}</Typography>
+            <Typography variant="body">
+              House: {recipe.student.houseType}
+            </Typography>
+            <Typography variant="body">
+              Pet: {recipe.student.petType}
+            </Typography>
           </div>
           <div>
-            <h3>Potions made of this Recipe:</h3>
+            <Typography variant="h6" component="h6">
+              Ingredients in this Recipe
+            </Typography>
+            <Typography variant="body">
+              {recipe.consistencies.map((c) => (
+                <li key={c.recipeId + c.ingredientId}>{c.ingredient.name}</li>
+              ))}
+            </Typography>
+          </div>
+          <div>
+          <Typography variant="h6" component="h6">
+              Potions made of this Recipe
+            </Typography>
+            <Typography variant="body">
+
             <p>Count: {recipe.potionsMadeOfRecipe.length}</p>
             {recipe.potionsMadeOfRecipe.map((p) => (
               <div key={p.id}>
                 ~ {p.name} - {p.brewingStatus}
               </div>
             ))}
+            </Typography>
           </div>
         </CardContent>
       </Card>
