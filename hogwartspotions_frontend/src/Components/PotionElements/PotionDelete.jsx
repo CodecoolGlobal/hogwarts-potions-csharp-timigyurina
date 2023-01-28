@@ -1,46 +1,48 @@
-import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 
-const PotionDelete = ({potionToDelete, onDelete, onCancelDelete}) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-
+const PotionDelete = ({
+  potionToDelete,
+  onDelete,
+  onCancelDelete,
+  onDeletionStart,
+  onDeletionEnd,
+  onDeletionError,
+}) => {
   const deletePotion = async (id) => {
     console.log(id);
-    const url = await fetch(`https://localhost:44390/api/potions/${id}`, {
-      method: "DELETE",
-    });
-    setIsLoading(true);
+    onDeletionStart(); // this prop is for informing the Potions component that the loading state needs to be set true
 
     try {
-      const response = await fetch(url);
+      const url = `https://localhost:44390/api/potions/${id}`;
+      const response = await fetch(url, {
+        method: "DELETE",
+      });
 
-      setIsLoading(false);
-      onDelete();
+      const responseData = await response.json();
+      console.log(responseData);
+      onDeletionEnd(); // informing the Potions component that the loading state needs to be set false
+      onDelete(); // informing the Potions component to fetch the Potions again
 
       if (!response.ok) {
-        const error = response.message;
-        setError(error);
-        console.log(error);
+        const error = responseData.message;
+        onDeletionError(error);
         return;
       }
     } catch (err) {
-      setIsLoading(false);
-      setError(err.message);
+      onDeletionEnd();
+      onDeletionError(err.message); // informing the Potions component to set the error state
       console.log(err);
     }
   };
 
   const deleteCancelled = () => {
-    onCancelDelete()
+    onCancelDelete();
   };
 
   return (
     <Card className="delete-potion-dialog" variant="outlined">
-      Are you sure you want to delete {potionToDelete.name} (id:{" "}
+      Are you sure you want to delete {potionToDelete.name} (id:
       {potionToDelete.id})?
       <div className="delete-potion-dialog-buttons">
         <Button onClick={deleteCancelled} variant="outlined" color="primary">

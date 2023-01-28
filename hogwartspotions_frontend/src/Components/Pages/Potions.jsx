@@ -10,7 +10,7 @@ const Potions = () => {
 
   const fetchPotions = async () => {
     const url = "https://localhost:44390/api/potions";
-    
+
     try {
       setIsLoading(true);
       const response = await fetch(url);
@@ -26,7 +26,6 @@ const Potions = () => {
       }
 
       setPotions(responseData);
-      
     } catch (err) {
       setIsLoading(false);
       setError(err.message);
@@ -51,7 +50,13 @@ const Potions = () => {
       ) : error ? (
         <MessageModal message={error} onClose={clearError} itIsAnError />
       ) : (
-        <PotionsTable potions={potions} onDelete={fetchPotions}/>
+        <PotionsTable
+          potions={potions}
+          onDelete={fetchPotions}
+          onDeletionStart={() => setIsLoading(true)}
+          onDeletionEnd={() => setIsLoading(false)}
+          onDeletionError={(errorMessageFromPotionDelete) => setError(errorMessageFromPotionDelete)}
+        />
       )}
     </>
   );

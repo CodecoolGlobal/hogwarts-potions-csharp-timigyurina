@@ -14,7 +14,7 @@ import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
 import PotionDelete from "./PotionDelete";
 import PageHeader from "../Shared/PageHeader";
 
-const PotionsTable = ({ potions, onDelete }) => {
+const PotionsTable = ({ potions, onDelete, onDeletionStart, onDeletionEnd, onDeletionError }) => {
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [potionToDelete, setPotionToDelete] = useState(null);
 
@@ -43,6 +43,9 @@ const PotionsTable = ({ potions, onDelete }) => {
           potionToDelete={potionToDelete}
           onDelete={onDelete}
           onCancelDelete={cancelDelete}
+          onDeletionStart={onDeletionStart}
+          onDeletionEnd={onDeletionEnd}
+          onDeletionError={onDeletionError}
         />
       )}
 
