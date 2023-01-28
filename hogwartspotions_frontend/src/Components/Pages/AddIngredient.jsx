@@ -8,7 +8,6 @@ import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
 
 import "../../App.css";
-import SuccessMessage from "../Shared/SuccessMessage";
 
 const AddIngredient = () => {
   const potionId = useParams().potionId;
@@ -109,12 +108,32 @@ const AddIngredient = () => {
     return `This is the ${formattedCount} time a Potion of this Recipe has been brewn.`
    }
 
+   const getRandomSuccessMessage = async () => {
+    const url = "https://localhost:44390/api/recipes/success";
+
+    try {
+      const response = await fetch(url);
+      const responseData = await response.json();
+      console.log(responseData);
+
+      if (!response.ok) {
+        const error = response.message;
+        console.log(error);
+        return;
+      }
+
+      setSuccess(`You have invented a new Recipe! ${responseData.message}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const ingredientWasSubmitted = (ingredient, responseData, errorMessage) => {
     !errorMessage && setAddedIngredient(ingredient);
     errorMessage && setError(errorMessage);
 
     responseData.brewingStatus === "Discovery" &&
-      setSuccess(<SuccessMessage />);
+      getRandomSuccessMessage()
 
     responseData.brewingStatus === "Replica" &&
       setSuccess(`You have successfully brewed the Recipe ${responseData.recipe.name}. ${formatPreviouslyBrewnCount(responseData.recipe.potionsMadeOfRecipe.length)}`);
