@@ -92,7 +92,6 @@ const StartBrewing = () => {
           <Button
             type="submit"
             className="start-potion-btn"
-            // disabled={!isMinLength(potionName, minPotionNameLength)}
             variant="contained"
             color="warning"
           >
@@ -105,8 +104,3 @@ const StartBrewing = () => {
 };
 
 export default StartBrewing;
-
-/*  Form: 
-  display success msg and link to the addingredient page for the potion 
-  get the studentId from auth context 
-*/

@@ -5,7 +5,10 @@ import RecipeDetails from "../RecipeElements/RecipeDetails";
 import LoadingSpinner from "../UIElements/LoadingSpinner";
 import MessageModal from "../UIElements/MessageModal";
 import RenameRecipeForm from "../FormElements/RenameRecipeForm";
+
 import Button from "@mui/material/Button";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import EditIcon from "@mui/icons-material/Edit";
 
 import "../../App.css";
 
@@ -103,13 +106,14 @@ const RenameRecipe = () => {
                 className="form-btn"
                 variant="contained"
                 color="warning"
-                sx={{margin: "1em"}}
+                sx={{ margin: "1em" }}
+                endIcon={isEditing ? <ArrowDownwardIcon /> : <EditIcon/>}
               >
-                Edit Recipe
+                {isEditing ? "Close" : "Edit"}
               </Button>
+              {isEditing && <RenameRecipeForm onUpdate={recipeWasRenamed} />}
             </>
           )}
-          {isEditing && <RenameRecipeForm onUpdate={recipeWasRenamed} />}
         </div>
       )}
     </>

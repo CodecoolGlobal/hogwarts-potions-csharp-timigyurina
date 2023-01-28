@@ -17,9 +17,9 @@ const Navlinks = () => {
         <ListItem sx={{ justifyContent: "center" }}>
             <Button variant="contained" component={NavLink} sx={{ width: '70%' }} to="/potions">Potions</Button>
         </ListItem >
-        <ListItem sx={{justifyContent:"center"}}>
+        {/* <ListItem sx={{justifyContent:"center"}}>
             <Button variant="contained" component={NavLink} sx={{ width: '70%' }} to="/potions/startbrewing">Start a new Potion</Button>
-        </ListItem >
+        </ListItem > */}
         {/* <ListItem sx={{justifyContent:"center"}}>
             <Button variant="contained" component={NavLink} sx={{ width: '100%' }} to="/addingredient">Add ingredient to Potion</Button>
         </ListItem > */}

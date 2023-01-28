@@ -12,7 +12,7 @@ const IngredientWasAdded = ({ onAddAnother }) => {
           Ingredient has been added successfully.
         </Typography>
         <p>
-          <Button variant="contained" onClick={addAnotherIngredient}>
+          <Button variant="contained" color="secondary" onClick={addAnotherIngredient}>
             Add another one
           </Button>
         </p>

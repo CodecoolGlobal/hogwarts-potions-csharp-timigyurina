@@ -19,6 +19,7 @@ function App() {
           <Route path="/potions/:potionId/addingredient" element={<AddIngredient />} />
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/recipes/:recipeId/details" element={<RenameRecipe />} />
+          {/* <Route path="/recipes//createRecipetails" element={<CreateRecipe />} /> */}
 
           <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate replace to="/" />} />

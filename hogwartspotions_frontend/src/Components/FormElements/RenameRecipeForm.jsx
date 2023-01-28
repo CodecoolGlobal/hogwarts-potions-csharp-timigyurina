@@ -88,7 +88,7 @@ const RenameRecipeForm = ({ onUpdate }) => {
                 className="form-btn"
                 disabled={!isMinLength(newName, minRecipeNameLength)}
                 variant="contained"
-                color="success"
+                color="secondary"
                 sx={{margin: "1em"}}
               >
                 Rename Recipe
