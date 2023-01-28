@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,17 +12,20 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
+import PageHeader from "../Shared/PageHeader";
 
 const RecipesTable = ({ recipes }) => {
   return (
-    <div className="Recipes">
+    <div className="recipes">
+      <PageHeader
+        title="Recipes"
+        buttonText="Start a new Recipe"
+        buttonLink="/recipes/createRecipe"
+      />
       {recipes.length === 0 ? (
         "There are no Recipes to show"
       ) : (
         <>
-          <Box sx={{ textAlign: "center" }}>
-            <h2>Recipes</h2>
-          </Box>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
@@ -45,7 +49,7 @@ const RecipesTable = ({ recipes }) => {
                         variant="text"
                         component={NavLink}
                         sx={{ width: "100%" }}
-                        to={`${recipe.id}/details`}
+                        to={`/recipes/${recipe.id}/details`}
                       >
                         <EditIcon />
                       </Button>

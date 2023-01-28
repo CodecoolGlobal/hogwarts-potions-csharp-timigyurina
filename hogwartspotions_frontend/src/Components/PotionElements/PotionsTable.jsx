@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,9 +11,8 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import PotionDelete from "./PotionDelete";
+import PageHeader from "../Shared/PageHeader";
 
 const PotionsTable = ({ potions, onDelete }) => {
   const [deleteInProgress, setDeleteInProgress] = useState(false);
@@ -35,37 +32,11 @@ const PotionsTable = ({ potions, onDelete }) => {
 
   return (
     <div className="potions">
-      <Box sx={{ textAlign: "center" }}>
-        <Typography variant="h4" component="h2" marginY={2}>
-          Potions
-        </Typography>
-      </Box>
-      <Box sx={{ marginBottom: 2, marginX: 2, width: "95%" }}>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-around"
-          spacing={2}
-        >
-          <Grid item xs={12} md={9}>
-            <Button
-              component={NavLink}
-              variant="text"
-              to="/potions/startbrewing"
-            >
-              Start a new Potion
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              id="outlined-basic"
-              label="Filter"
-              variant="outlined"
-              size="small"
-            />
-          </Grid>
-        </Grid>
-      </Box>
+      <PageHeader
+        title="Potions"
+        buttonText="Start a new Potion"
+        buttonLink="/potions/startbrewing"
+      />
 
       {deleteInProgress && (
         <PotionDelete
