@@ -81,7 +81,7 @@ const AddIngredient = () => {
   const clearSuccess = () => {
     setSuccess(null);
     console.log(potion.recipe);
-    navigate(`/recipes/${potion.recipe.id}/details`, { replace: true });    //GO TO RECIPES PAGE FOR NAMING IT
+    navigate(`/recipes/${potion.recipe.id}/details`, { replace: true });  
   };
   
   const closeModal = () => {
@@ -89,14 +89,34 @@ const AddIngredient = () => {
     setSuccess(null);
   };
   
+  const formatPreviouslyBrewnCount = (count) => { 
+    let formattedCount
+    switch (count) {
+      case 1:
+        formattedCount = "first" 
+        break;
+      case 2:
+        formattedCount = "second" 
+        break;
+      case 3:
+        formattedCount = "third" 
+        break;
+      default:
+        formattedCount =`${count}th`
+        break;
+    }
+    return `This is the ${formattedCount} time a Potion of this Recipe has been brewn.`
+   }
 
   const ingredientWasSubmitted = (ingredient, responseData, errorMessage) => {
     !errorMessage && setAddedIngredient(ingredient);
+    errorMessage && setError(errorMessage);
+
     responseData.brewingStatus === "Discovery" &&
       setSuccess("Congratulations! You have invented a new Recipe!");
+
     responseData.brewingStatus === "Replica" &&
-      setSuccess(`You have successfully brewed the Recipe ${responseData.recipe.name}`);
-    errorMessage && setError(errorMessage);
+      setSuccess(`You have successfully brewed the Recipe ${responseData.recipe.name}. ${formatPreviouslyBrewnCount(responseData.recipe.potionsMadeOfRecipe.length)}`);
 
     fetchPotion();
   };
@@ -134,10 +154,3 @@ const AddIngredient = () => {
 };
 
 export default AddIngredient;
-
-/*  Form: 
-  input field or drop-down menu for a single ingredient name
-  submit button to add ingredients one by one
-  
-  Help button. Clicking the help button must display five to ten recipes. These recipes must contain the selected ingredients. 
-  When the potion does not match any known recipe, a field must be displayed to name it. */

@@ -189,6 +189,14 @@ namespace HogwartsPotions.Controllers
             Potion? updatedPotionWithMoreDetails = await _unitOfWork.PotionRepository.GetPotionWithDetails(potionId); // just to be able to view everything in the response
             GetPotionDTOWithRecipeAndPotionIngredientDetails updatedPotionDTO = _mapper.Map<GetPotionDTOWithRecipeAndPotionIngredientDetails>(updatedPotionWithMoreDetails);
 
+            // If the Potion has a Recipe, get the number of Potions that have been made of this Recipe (for the frontend)
+            if (updatedPotion.Recipe != null)
+            {
+                HashSet<Potion> potionsOfRecipe = await _unitOfWork.PotionRepository.GetPotionsOfRecipe(updatedPotion.Recipe.Id);
+                HashSet<GetPotionDTO> potionDTOsOfRecipe = _mapper.Map<HashSet<GetPotionDTO>>(potionsOfRecipe);
+                updatedPotionDTO.Recipe!.PotionsMadeOfRecipe = potionDTOsOfRecipe;
+            }
+
             return Ok(updatedPotionDTO);
         }
 
