@@ -4,6 +4,7 @@ using HogwartsPotions.Models.DTOs.PotionDTOs;
 using HogwartsPotions.Models.DTOs.RecipeDTOs;
 using HogwartsPotions.Models.DTOs.RoomDTOs;
 using HogwartsPotions.Models.Entities;
+using HogwartsPotions.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -109,6 +110,16 @@ namespace HogwartsPotions.Controllers
             RecipeDTOWithId updatedRecipeDTO = _mapper.Map<RecipeDTOWithId>(recipe);
 
             return Ok(updatedRecipeDTO);
+        }
+
+
+        // GET: api/Recipes/success
+        [HttpGet("success")]
+        public ActionResult<SuccessMessage> GetSuccessMessage()
+        {
+            SuccessMessage message = SuccessMessageGenerator.GetRandomMessage();
+
+            return Ok(message);
         }
     }
 }

@@ -7,6 +7,7 @@ using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HogwartsPotions.Controllers
 {
@@ -225,11 +226,11 @@ namespace HogwartsPotions.Controllers
             Potion? potion = await _unitOfWork.PotionRepository.GetAsync(id);
 
             if (potion == null)
-                return NotFound();
+                return NotFound(JsonConvert.SerializeObject(new { message = $"No Potion with the id of {id} exists" }));
 
             await _unitOfWork.PotionRepository.DeleteAsync(id);
 
-            return NoContent();
+            return Ok(JsonConvert.SerializeObject(new { message = $"Potion {id} was successfully deleted" }));
         }
 
 
