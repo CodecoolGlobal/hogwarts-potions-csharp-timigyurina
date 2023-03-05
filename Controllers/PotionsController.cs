@@ -136,7 +136,7 @@ namespace HogwartsPotions.Controllers
             return CreatedAtAction("GetPotionById", new { id = startedPotion.Id }, startedPotionDTO);
         }
 
-        // PUT: api/Potions/10/addaddIngredient
+        // PUT: api/Potions/10/addIngredient
         [HttpPut("{potionId}/addIngredient")]
         public async Task<ActionResult<GetPotionDTOWithDetails>> AddIngredient(int potionId, IngredientDTO ingredientDTO)
         {

@@ -44,7 +44,6 @@ namespace HogwartsPotions.Controllers
             }
 
             GetStudentDTO studentDTO = _mapper.Map<GetStudentDTO>(student);
-            // studentDTO.Room = await _unitOfWork.RoomRepository.GetAsync(studentDTO.RoomId);
 
             return Ok(studentDTO);
         }
@@ -90,7 +89,6 @@ namespace HogwartsPotions.Controllers
 
             if (student == null)
             {
-                // throw new NotFoundException(nameof(PutCountry), id);
                 return NotFound();
             }
 
@@ -143,7 +141,6 @@ namespace HogwartsPotions.Controllers
 
             if (student == null)
             {
-                // throw new NotFoundException(nameof(PutCountry), id);
                 return NotFound();
             }
 
@@ -151,13 +148,13 @@ namespace HogwartsPotions.Controllers
 
             IEnumerable<GetRoomDTO> availableRoomsWithHouseDTOs = _mapper.Map<IEnumerable<GetRoomDTO>>(availableRoomsWithHouse);
 
-            StudentWithPossibleRooms studentWithPossibleHouses = new()
+            StudentWithPossibleRooms studentWithPossibleRooms = new()
             {
                 Student = _mapper.Map<GetStudentDTO>(student),
                 PossibleRooms = availableRoomsWithHouseDTOs.ToHashSet()
             };
 
-            return Ok(studentWithPossibleHouses);
+            return Ok(studentWithPossibleRooms);
         }
 
 
@@ -212,7 +209,6 @@ namespace HogwartsPotions.Controllers
 
             if (student == null)
             {
-                // throw new NotFoundException(nameof(PutCountry), id);
                 return NotFound();
             }
 

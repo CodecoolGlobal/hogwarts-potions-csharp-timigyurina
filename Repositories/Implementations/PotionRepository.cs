@@ -2,7 +2,6 @@
 using HogwartsPotions.Models.Entities;
 using HogwartsPotions.Models.Enums;
 using HogwartsPotions.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace HogwartsPotions.Repositories.Implementations
@@ -38,8 +37,6 @@ namespace HogwartsPotions.Repositories.Implementations
             return _context.Potions
                 .Include(p => p.Student)
                 .Include(p => p.Recipe)
-                //.ThenInclude(r => r.Consistencies)
-                //    .ThenInclude(c => c.Ingredient)
                 .Include(p => p.PotionIngredients)
                     .ThenInclude(pi => pi.Ingredient)
                 .AsNoTracking()
@@ -69,7 +66,6 @@ namespace HogwartsPotions.Repositories.Implementations
         public async Task<Potion?> UpdateBasedOnAddedIngredient(int potionId, BrewingStatus brewingStatus, Recipe? recipe)
         {
             Potion? potionToBeUpdated = await _dbSet
-                //.Include(p => p.PotionIngredients)
                 .FirstOrDefaultAsync(p => p.Id == potionId);
 
             if (potionToBeUpdated == null)
