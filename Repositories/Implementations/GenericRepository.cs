@@ -63,7 +63,7 @@ namespace HogwartsPotions.Repositories.Implementations
 
         public virtual async Task UpdateAsync(T entity)
         {
-            _context.Update(entity); // Update does not have an async method
+            _context.Update(entity); 
             await _context.SaveChangesAsync();
         }
 
@@ -76,7 +76,7 @@ namespace HogwartsPotions.Repositories.Implementations
                 {
                     _dbSet.Attach(entityToDelete);
                 }
-                _dbSet.Remove(entityToDelete); // Remove does not have an async method
+                _dbSet.Remove(entityToDelete); 
 
                 await _context.SaveChangesAsync();
             }

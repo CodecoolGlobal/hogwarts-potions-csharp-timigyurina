@@ -30,7 +30,6 @@ namespace HogwartsPotions.Controllers
         [HttpGet("rat-owners")]
         public async Task<ActionResult<IEnumerable<GetRoomDTO>>> GetRoomsOfRatOwners()
         {
-            //IEnumerable<Room> roomsOfRatOwners = await _unitOfWork.RoomRepository.GetAllAsync(r => r.Residents.All(res => res.PetType == PetType.None || res.PetType == PetType.Rat));
             IEnumerable<Room> roomsOfRatOwners = await _unitOfWork.RoomRepository.GetRoomsOfRatOwners();
 
             IEnumerable<GetRoomDTO> roomDTOs = _mapper.Map<IEnumerable<GetRoomDTO>>(roomsOfRatOwners);
@@ -101,7 +100,6 @@ namespace HogwartsPotions.Controllers
 
             if (room == null)
             {
-                // throw new NotFoundException(nameof(PutCountry), id);
                 return NotFound();
             }
 
@@ -148,7 +146,6 @@ namespace HogwartsPotions.Controllers
 
             if (room == null)
             {
-                // throw new NotFoundException(nameof(PutCountry), id);
                 return NotFound();
             }
 
